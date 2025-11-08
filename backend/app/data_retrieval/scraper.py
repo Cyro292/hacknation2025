@@ -2,10 +2,12 @@ import logging
 from .polymarket_api import PolymarketAPI
 from .supabase_client import SupabaseClient
 from .scrape_tracker import ScrapeTracker
+from .polymarket_api_enhanced import PolymarketVolatilityCalculator
 from ..schemas.market_schema import MarketCreate
 from datetime import datetime
 import time
 import json
+import asyncio
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +29,7 @@ def scrape_and_store_markets(supabase_url: str, supabase_api_key: str):
     
     try:
         # Initialize clients
-        logger.info("\n📡 Step 1/6: Initializing API clients...")
+        logger.info("\n📡 Step 1/7: Initializing API clients...")
         polymarket_api = PolymarketAPI()
         supabase = SupabaseClient(supabase_url, supabase_api_key)
         
@@ -38,7 +40,7 @@ def scrape_and_store_markets(supabase_url: str, supabase_api_key: str):
         tracker.cleanup_stale_scrapes()
         
         # Check if we should run the scrape
-        logger.info("\n🔍 Step 2/6: Checking scrape eligibility...")
+        logger.info("\n🔍 Step 2/7: Checking scrape eligibility...")
         should_run, reason = tracker.should_run_scrape(min_interval_minutes=55)
         
         if not should_run:
@@ -54,11 +56,11 @@ def scrape_and_store_markets(supabase_url: str, supabase_api_key: str):
             logger.warning("⚠️  Could not start scrape tracking, continuing anyway...")
         
         # Ensure the table exists
-        logger.info("\n🗄️  Step 3/6: Setting up database tables...")
+        logger.info("\n🗄️  Step 3/7: Setting up database tables...")
         supabase.create_markets_table()
 
         # Scrape active markets
-        logger.info("\n📥 Step 4/6: Fetching markets from Polymarket API...")
+        logger.info("\n📥 Step 4/7: Fetching markets from Polymarket API...")
         active_markets = polymarket_api.get_active_markets()
         
         if not active_markets:
@@ -69,7 +71,7 @@ def scrape_and_store_markets(supabase_url: str, supabase_api_key: str):
         markets_fetched = len(active_markets)
         
         # Prepare data for Supabase
-        logger.info("\n🔄 Step 5/6: Preparing and importing data to Supabase...")
+        logger.info("\n🔄 Step 5/7: Preparing and importing data to Supabase...")
         logger.info(f"Processing {markets_fetched} markets...")
         
         markets_to_import = []
@@ -97,6 +99,11 @@ def scrape_and_store_markets(supabase_url: str, supabase_api_key: str):
                     except:
                         outcome_prices = [outcome_prices]
                 
+                # Skip inactive markets
+                if not market.get("active", True):
+                    skipped += 1
+                    continue
+                
                 # Create market data using Pydantic schema for validation
                 try:
                     market_schema = MarketCreate(
@@ -108,6 +115,10 @@ def scrape_and_store_markets(supabase_url: str, supabase_api_key: str):
                         end_date=market.get("endDate"),
                         volume=float(market.get("volume", 0)) if market.get("volume") else 0.0,
                         is_active=market.get("active", True),
+                        slug=market.get("slug"),
+                        one_day_price_change=market.get("oneDayPriceChange"),
+                        one_week_price_change=market.get("oneWeekPriceChange"),
+                        one_month_price_change=market.get("oneMonthPriceChange"),
                     )
                     
                     # Convert validated schema to dict for database insertion
@@ -145,8 +156,98 @@ def scrape_and_store_markets(supabase_url: str, supabase_api_key: str):
             markets_added = len(markets_to_import)
             markets_failed = skipped
             
+            # Calculate volatility for new/updated markets
+            logger.info("\n📊 Step 6/7: Calculating volatility scores...")
+            try:
+                async def calculate_volatility_async():
+                    calculator = PolymarketVolatilityCalculator()
+                    try:
+                        # Get market IDs that were just imported
+                        polymarket_ids = [m['polymarket_id'] for m in markets_to_import]
+                        
+                        # Check which already have volatility
+                        from supabase import create_client
+                        supabase_client = create_client(supabase_url, supabase_api_key)
+                        
+                        existing_response = supabase_client.table('market_volatility').select('polymarket_id').in_('polymarket_id', polymarket_ids).execute()
+                        existing_polymarket_ids = {row['polymarket_id'] for row in existing_response.data}
+                        
+                        # Filter to only calculate for new markets
+                        markets_needing_volatility = [
+                            m for m in markets_to_import 
+                            if m['polymarket_id'] not in existing_polymarket_ids
+                        ]
+                        
+                        if not markets_needing_volatility:
+                            logger.info("  All markets already have volatility scores")
+                            return 0, 0
+                        
+                        logger.info(f"  Calculating volatility for {len(markets_needing_volatility)} new markets...")
+                        logger.info(f"  Using price change data from Gamma API (no rate limits!)")
+                        
+                        vol_success = 0
+                        price_history_count = 0
+                        proxy_count = 0
+                        
+                        for i, market in enumerate(markets_needing_volatility):
+                            try:
+                                polymarket_id = market['polymarket_id']
+                                
+                                # Try to use real price change data first (BEST method!)
+                                volatility, method, metadata = calculator.calculate_volatility_from_price_changes(market)
+                                
+                                if volatility is None:
+                                    # Fallback to proxy if no price change data
+                                    volatility, method, metadata = calculator.calculate_proxy_volatility(market)
+                                    proxy_count += 1
+                                else:
+                                    price_history_count += 1
+                                
+                                # Get market DB ID
+                                market_response = supabase_client.table('markets').select('id').eq('polymarket_id', polymarket_id).execute()
+                                if not market_response.data:
+                                    continue
+                                
+                                market_id = market_response.data[0]['id']
+                                
+                                # Insert volatility
+                                insert_data = {
+                                    'market_id': market_id,
+                                    'polymarket_id': polymarket_id,
+                                    'volatility_24h': volatility,
+                                    'calculation_method': method,
+                                    'data_points': metadata.get('data_points', 0),
+                                    'price_range_24h': json.dumps(metadata.get('price_range', {})),
+                                    'calculated_at': datetime.now().isoformat()
+                                }
+                                
+                                supabase_client.table('market_volatility').upsert(
+                                    insert_data,
+                                    on_conflict='market_id'
+                                ).execute()
+                                
+                                vol_success += 1
+                                
+                                if (i + 1) % 50 == 0:
+                                    logger.info(f"    Progress: {i+1}/{len(markets_needing_volatility)} ({(i+1)/len(markets_needing_volatility)*100:.1f}%)")
+                                
+                            except Exception as e:
+                                logger.debug(f"    Error calculating volatility for {market.get('polymarket_id')}: {e}")
+                        
+                        return vol_success, price_history_count
+                        
+                    finally:
+                        await calculator.close()
+                
+                        # Run async function
+                        vol_success, price_history_count = asyncio.run(calculate_volatility_async())
+                        logger.info(f"✅ Calculated volatility for {vol_success} markets ({price_history_count} from real price changes)")
+                
+            except Exception as e:
+                logger.warning(f"⚠️  Volatility calculation failed (non-critical): {e}")
+            
             # Create embeddings for new markets
-            logger.info("\n🧠 Step 6/6: Creating embeddings for markets...")
+            logger.info("\n🧠 Step 7/7: Creating embeddings for markets...")
             try:
                 from ..services.vector_service import get_vector_service
                 from ..services.database_service import get_database_service
