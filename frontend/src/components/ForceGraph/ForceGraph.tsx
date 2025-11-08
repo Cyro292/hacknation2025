@@ -4,8 +4,11 @@
 "use client";
 
 import { useCallback, useState, useRef, useEffect } from "react";
-import type { GraphData } from "@/types/graph";
+import { select } from "d3-selection";
+import type { Simulation } from "d3-force";
+import type { GraphData, GraphNode, GraphConnection } from "@/types/graph";
 import { useForceSimulation } from "@/hooks/useForceSimulation";
+import { createDragBehavior } from "@/hooks/useDrag";
 import {
   getNodeColor,
   getConnectionWidth,
@@ -52,10 +55,30 @@ export function ForceGraph({ data }: ForceGraphProps) {
   });
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [currentSimulation, setCurrentSimulation] = useState<Simulation<
+    GraphNode,
+    GraphConnection
+  > | null>(null);
 
   // State to trigger re-renders on simulation tick
   const [, setTick] = useState(0);
+
+  // Callback to force re-render when simulation updates node positions
+  const handleTick = useCallback(() => {
+    setTick((t) => t + 1);
+  }, []);
+
+  // Callback to capture simulation instance when created
+  const handleSimulationCreated = useCallback(
+    (sim: Simulation<GraphNode, GraphConnection>) => {
+      console.log("[DEBUG] handleSimulationCreated called");
+      console.log("[DEBUG] Simulation instance:", sim);
+      setCurrentSimulation(sim);
+    },
+    []
+  );
 
   // Measure container dimensions on mount and window resize
   useEffect(() => {
@@ -77,11 +100,6 @@ export function ForceGraph({ data }: ForceGraphProps) {
     };
   }, []);
 
-  // Callback to force re-render when simulation updates node positions
-  const handleTick = useCallback(() => {
-    setTick((t) => t + 1);
-  }, []);
-
   // Initialize and manage D3 force simulation
   // Pass the mutable copies - D3 will update these in place
   useForceSimulation({
@@ -90,7 +108,54 @@ export function ForceGraph({ data }: ForceGraphProps) {
     width: dimensions.width,
     height: dimensions.height,
     onTick: handleTick,
+    onSimulationCreated: handleSimulationCreated,
   });
+
+  // Apply drag behavior to nodes AFTER they are rendered in the DOM
+  // This effect runs after the nodes are painted to the screen
+  useEffect(() => {
+    console.log("[DEBUG] Drag application effect triggered", {
+      hasSimulation: !!currentSimulation,
+      hasSvg: !!svgRef.current,
+      nodesCount: mutableData.nodes.length
+    });
+
+    if (!currentSimulation || !svgRef.current) {
+      console.log("[DEBUG] Cannot apply drag - missing simulation or SVG ref");
+      return;
+    }
+
+    const dragBehavior = createDragBehavior(currentSimulation);
+    console.log("[DEBUG] Drag behavior created:", dragBehavior);
+
+    if (!dragBehavior) {
+      console.warn("[DEBUG] Failed to create drag behavior");
+      return;
+    }
+
+    const svg = select(svgRef.current);
+    const nodeCircles = svg.selectAll<SVGCircleElement, GraphNode>(".node-circle");
+
+    console.log("[DEBUG] Selecting .node-circle elements");
+    console.log("[DEBUG] Found", nodeCircles.size(), "node circles");
+    console.log("[DEBUG] Node circle DOM elements:", nodeCircles.nodes());
+
+    if (nodeCircles.size() === 0) {
+      console.warn("[DEBUG] No .node-circle elements found in DOM!");
+      // Debug: Let's see what elements ARE in the SVG
+      console.log("[DEBUG] All SVG children:", svgRef.current.querySelectorAll("*"));
+      return;
+    }
+
+    // CRITICAL: Bind node data to circle elements so drag handlers receive the data
+    // React renders circles in mutableData.nodes order, so we bind the same array by index
+    console.log("[DEBUG] Binding data to", mutableData.nodes.length, "nodes");
+    nodeCircles.data(mutableData.nodes);
+    console.log("[DEBUG] Data bound successfully");
+
+    nodeCircles.call(dragBehavior);
+    console.log("[DEBUG] ✅ Drag behavior successfully applied to", nodeCircles.size(), "nodes");
+  }, [currentSimulation, mutableData.nodes]);
 
   const nodeRadius = getNodeRadius();
   const connectionColor = getConnectionColor();
@@ -110,6 +175,7 @@ export function ForceGraph({ data }: ForceGraphProps) {
   return (
     <div ref={containerRef} className="w-full h-full bg-graph-bg">
       <svg
+        ref={svgRef}
         width="100%"
         height="100%"
         viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
@@ -174,6 +240,7 @@ export function ForceGraph({ data }: ForceGraphProps) {
               <g key={`node-${node.id}-${nodeIndex}`} className="node">
                 {/* Node circle */}
                 <circle
+                  className="node-circle"
                   cx={node.x}
                   cy={node.y}
                   r={nodeRadius}

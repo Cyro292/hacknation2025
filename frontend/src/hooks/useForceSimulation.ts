@@ -1,7 +1,7 @@
 // ABOUTME: Custom React hook for managing D3 force simulation physics
 // ABOUTME: Handles simulation initialization, tick updates, and cleanup for force-directed graph layout
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import {
   forceSimulation,
   forceLink,
@@ -18,6 +18,9 @@ interface UseForceSimulationProps {
   width: number;
   height: number;
   onTick?: () => void;
+  onSimulationCreated?: (
+    simulation: Simulation<GraphNode, GraphConnection>
+  ) => void;
 }
 
 /**
@@ -29,10 +32,8 @@ interface UseForceSimulationProps {
  * - Center force: Pulls the entire graph toward the center of the viewport
  * - Collision force: Prevents nodes from overlapping
  *
- * Note: The simulation instance is managed internally. For TICKET-004 and TICKET-005,
- * this hook will be extended to expose control functions for drag and zoom interactions.
- *
- * @param props - Configuration including nodes, connections, dimensions, and tick callback
+ * @param props - Configuration including nodes, connections, dimensions, tick callback, and simulation ready callback
+ * @returns Function to get current simulation instance
  */
 export function useForceSimulation({
   nodes,
@@ -40,20 +41,31 @@ export function useForceSimulation({
   width,
   height,
   onTick,
-}: UseForceSimulationProps): void {
+  onSimulationCreated,
+}: UseForceSimulationProps) {
   const simulationRef = useRef<Simulation<GraphNode, GraphConnection> | null>(
     null
   );
 
   useEffect(() => {
+    console.log("[DEBUG useForceSimulation] Effect triggered", {
+      nodesCount: nodes.length,
+      width,
+      height
+    });
+
     // Skip if no data provided
     if (nodes.length === 0) {
+      console.log("[DEBUG useForceSimulation] No nodes, skipping");
       return;
     }
 
     if (width === 0 || height === 0) {
+      console.log("[DEBUG useForceSimulation] No dimensions, skipping");
       return;
     }
+
+    console.log("[DEBUG useForceSimulation] Creating simulation...");
 
     // D3 force simulation is designed to mutate nodes in-place, adding x, y, vx, vy properties.
     // The caller (ForceGraph) is responsible for providing mutable copies of the data.
@@ -96,10 +108,28 @@ export function useForceSimulation({
     // Store simulation reference for external access
     simulationRef.current = simulation;
 
+    console.log("[DEBUG useForceSimulation] Simulation created successfully");
+
+    // Notify callback that simulation is ready
+    if (onSimulationCreated) {
+      console.log("[DEBUG useForceSimulation] Calling onSimulationCreated callback");
+      onSimulationCreated(simulation);
+    } else {
+      console.warn("[DEBUG useForceSimulation] No onSimulationCreated callback provided");
+    }
+
     // Cleanup function: stop simulation when component unmounts or dependencies change
     return () => {
       simulation.stop();
       simulationRef.current = null;
     };
-  }, [nodes, connections, width, height, onTick]);
+  }, [nodes, connections, width, height, onTick, onSimulationCreated]);
+
+  // Return a stable getter function for accessing the simulation
+  const getSimulation = useCallback(
+    () => simulationRef.current,
+    []
+  );
+
+  return getSimulation;
 }
