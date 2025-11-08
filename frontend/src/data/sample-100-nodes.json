@@ -1,0 +1,2348 @@
+{
+  "nodes": [
+    {
+      "id": "AAPL",
+      "name": "Apple Inc.",
+      "group": "0",
+      "volatility": 0.63,
+      "lastUpdate": "2025-11-08T06:20:30.280Z"
+    },
+    {
+      "id": "GOOGL",
+      "name": "Alphabet Inc.",
+      "group": "1",
+      "volatility": 0.32,
+      "lastUpdate": "2025-11-08T07:25:30.280Z"
+    },
+    {
+      "id": "MSFT",
+      "name": "Microsoft Corp.",
+      "group": "2",
+      "volatility": 0.53,
+      "lastUpdate": "2025-11-08T01:14:30.280Z"
+    },
+    {
+      "id": "AMZN",
+      "name": "Amazon.com Inc.",
+      "group": "3",
+      "volatility": 0.42,
+      "lastUpdate": "2025-11-08T10:23:30.280Z"
+    },
+    {
+      "id": "META",
+      "name": "Meta Platforms",
+      "group": "4",
+      "volatility": 0.43,
+      "lastUpdate": "2025-11-08T11:07:30.280Z"
+    },
+    {
+      "id": "TSLA",
+      "name": "Tesla Inc.",
+      "group": "5",
+      "volatility": 0.49,
+      "lastUpdate": "2025-11-08T21:39:30.280Z"
+    },
+    {
+      "id": "NVDA",
+      "name": "NVIDIA Corp.",
+      "group": "6",
+      "volatility": 0.17,
+      "lastUpdate": "2025-11-08T03:36:30.280Z"
+    },
+    {
+      "id": "JPM",
+      "name": "JPMorgan Chase",
+      "group": "7",
+      "volatility": 0.24,
+      "lastUpdate": "2025-11-08T02:11:30.280Z"
+    },
+    {
+      "id": "V",
+      "name": "Visa Inc.",
+      "group": "8",
+      "volatility": 0.54,
+      "lastUpdate": "2025-11-08T11:37:30.280Z"
+    },
+    {
+      "id": "JNJ",
+      "name": "Johnson & Johnson",
+      "group": "9",
+      "volatility": 0.22,
+      "lastUpdate": "2025-11-08T08:05:30.280Z"
+    },
+    {
+      "id": "WMT",
+      "name": "Walmart Inc.",
+      "group": "0",
+      "volatility": 0.37,
+      "lastUpdate": "2025-11-08T15:07:30.280Z"
+    },
+    {
+      "id": "PG",
+      "name": "Procter & Gamble",
+      "group": "1",
+      "volatility": 0.7,
+      "lastUpdate": "2025-11-08T17:30:30.280Z"
+    },
+    {
+      "id": "MA",
+      "name": "Mastercard Inc.",
+      "group": "2",
+      "volatility": 0.22,
+      "lastUpdate": "2025-11-08T06:34:30.280Z"
+    },
+    {
+      "id": "UNH",
+      "name": "UnitedHealth Group",
+      "group": "3",
+      "volatility": 0.77,
+      "lastUpdate": "2025-11-08T20:18:30.280Z"
+    },
+    {
+      "id": "HD",
+      "name": "Home Depot",
+      "group": "4",
+      "volatility": 0.77,
+      "lastUpdate": "2025-11-08T19:07:30.280Z"
+    },
+    {
+      "id": "DIS",
+      "name": "Walt Disney Co.",
+      "group": "5",
+      "volatility": 0.16,
+      "lastUpdate": "2025-11-08T10:51:30.280Z"
+    },
+    {
+      "id": "BAC",
+      "name": "Bank of America",
+      "group": "6",
+      "volatility": 0.53,
+      "lastUpdate": "2025-11-08T05:08:30.280Z"
+    },
+    {
+      "id": "ADBE",
+      "name": "Adobe Inc.",
+      "group": "7",
+      "volatility": 0.64,
+      "lastUpdate": "2025-11-08T18:06:30.280Z"
+    },
+    {
+      "id": "CRM",
+      "name": "Salesforce Inc.",
+      "group": "8",
+      "volatility": 0.49,
+      "lastUpdate": "2025-11-07T22:31:30.280Z"
+    },
+    {
+      "id": "NFLX",
+      "name": "Netflix Inc.",
+      "group": "9",
+      "volatility": 0.64,
+      "lastUpdate": "2025-11-08T08:32:30.280Z"
+    },
+    {
+      "id": "INTC",
+      "name": "Intel Corp.",
+      "group": "0",
+      "volatility": 0.42,
+      "lastUpdate": "2025-11-08T04:54:30.280Z"
+    },
+    {
+      "id": "CSCO",
+      "name": "Cisco Systems",
+      "group": "1",
+      "volatility": 0.53,
+      "lastUpdate": "2025-11-08T05:44:30.280Z"
+    },
+    {
+      "id": "PFE",
+      "name": "Pfizer Inc.",
+      "group": "2",
+      "volatility": 0.77,
+      "lastUpdate": "2025-11-08T09:19:30.280Z"
+    },
+    {
+      "id": "KO",
+      "name": "Coca-Cola Co.",
+      "group": "3",
+      "volatility": 0.36,
+      "lastUpdate": "2025-11-08T14:53:30.280Z"
+    },
+    {
+      "id": "PEP",
+      "name": "PepsiCo Inc.",
+      "group": "4",
+      "volatility": 0.59,
+      "lastUpdate": "2025-11-08T11:00:30.280Z"
+    },
+    {
+      "id": "TMO",
+      "name": "Thermo Fisher",
+      "group": "5",
+      "volatility": 0.64,
+      "lastUpdate": "2025-11-08T18:08:30.280Z"
+    },
+    {
+      "id": "ABT",
+      "name": "Abbott Labs",
+      "group": "6",
+      "volatility": 0.54,
+      "lastUpdate": "2025-11-08T12:30:30.280Z"
+    },
+    {
+      "id": "MRK",
+      "name": "Merck & Co.",
+      "group": "7",
+      "volatility": 0.38,
+      "lastUpdate": "2025-11-08T17:26:30.280Z"
+    },
+    {
+      "id": "ABBV",
+      "name": "AbbVie Inc.",
+      "group": "8",
+      "volatility": 0.61,
+      "lastUpdate": "2025-11-08T03:23:30.280Z"
+    },
+    {
+      "id": "NKE",
+      "name": "Nike Inc.",
+      "group": "9",
+      "volatility": 0.46,
+      "lastUpdate": "2025-11-08T13:32:30.280Z"
+    },
+    {
+      "id": "BTC",
+      "name": "Bitcoin",
+      "group": "0",
+      "volatility": 0.46,
+      "lastUpdate": "2025-11-08T01:23:30.280Z"
+    },
+    {
+      "id": "ETH",
+      "name": "Ethereum",
+      "group": "1",
+      "volatility": 0.57,
+      "lastUpdate": "2025-11-08T10:40:30.280Z"
+    },
+    {
+      "id": "BNB",
+      "name": "Binance Coin",
+      "group": "2",
+      "volatility": 0.31,
+      "lastUpdate": "2025-11-08T05:24:30.280Z"
+    },
+    {
+      "id": "SOL",
+      "name": "Solana",
+      "group": "3",
+      "volatility": 0.3,
+      "lastUpdate": "2025-11-08T21:43:30.280Z"
+    },
+    {
+      "id": "ADA",
+      "name": "Cardano",
+      "group": "4",
+      "volatility": 0.6,
+      "lastUpdate": "2025-11-07T22:41:30.280Z"
+    },
+    {
+      "id": "XRP",
+      "name": "Ripple",
+      "group": "5",
+      "volatility": 0.3,
+      "lastUpdate": "2025-11-08T15:23:30.280Z"
+    },
+    {
+      "id": "DOT",
+      "name": "Polkadot",
+      "group": "6",
+      "volatility": 0.42,
+      "lastUpdate": "2025-11-08T05:56:30.280Z"
+    },
+    {
+      "id": "DOGE",
+      "name": "Dogecoin",
+      "group": "7",
+      "volatility": 0.54,
+      "lastUpdate": "2025-11-08T14:33:30.280Z"
+    },
+    {
+      "id": "AVAX",
+      "name": "Avalanche",
+      "group": "8",
+      "volatility": 0.55,
+      "lastUpdate": "2025-11-08T08:16:30.280Z"
+    },
+    {
+      "id": "MATIC",
+      "name": "Polygon",
+      "group": "9",
+      "volatility": 0.29,
+      "lastUpdate": "2025-11-08T14:43:30.280Z"
+    },
+    {
+      "id": "LINK",
+      "name": "Chainlink",
+      "group": "0",
+      "volatility": 0.35,
+      "lastUpdate": "2025-11-08T05:44:30.280Z"
+    },
+    {
+      "id": "UNI",
+      "name": "Uniswap",
+      "group": "1",
+      "volatility": 0.25,
+      "lastUpdate": "2025-11-08T21:23:30.280Z"
+    },
+    {
+      "id": "ATOM",
+      "name": "Cosmos",
+      "group": "2",
+      "volatility": 0.42,
+      "lastUpdate": "2025-11-08T13:17:30.280Z"
+    },
+    {
+      "id": "LTC",
+      "name": "Litecoin",
+      "group": "3",
+      "volatility": 0.81,
+      "lastUpdate": "2025-11-08T11:52:30.280Z"
+    },
+    {
+      "id": "NEAR",
+      "name": "Near Protocol",
+      "group": "4",
+      "volatility": 0.52,
+      "lastUpdate": "2025-11-08T02:14:30.280Z"
+    },
+    {
+      "id": "ALGO",
+      "name": "Algorand",
+      "group": "5",
+      "volatility": 0.5,
+      "lastUpdate": "2025-11-08T07:34:30.280Z"
+    },
+    {
+      "id": "XLM",
+      "name": "Stellar",
+      "group": "6",
+      "volatility": 0.47,
+      "lastUpdate": "2025-11-08T09:19:30.280Z"
+    },
+    {
+      "id": "VET",
+      "name": "VeChain",
+      "group": "7",
+      "volatility": 0.78,
+      "lastUpdate": "2025-11-08T02:10:30.280Z"
+    },
+    {
+      "id": "ICP",
+      "name": "Internet Computer",
+      "group": "8",
+      "volatility": 0.29,
+      "lastUpdate": "2025-11-08T18:21:30.280Z"
+    },
+    {
+      "id": "FIL",
+      "name": "Filecoin",
+      "group": "9",
+      "volatility": 0.65,
+      "lastUpdate": "2025-11-07T22:37:30.280Z"
+    },
+    {
+      "id": "GOLD",
+      "name": "Gold Futures",
+      "group": "0",
+      "volatility": 0.76,
+      "lastUpdate": "2025-11-08T01:56:30.280Z"
+    },
+    {
+      "id": "SILVER",
+      "name": "Silver Futures",
+      "group": "1",
+      "volatility": 0.47,
+      "lastUpdate": "2025-11-08T01:20:30.280Z"
+    },
+    {
+      "id": "OIL",
+      "name": "Crude Oil",
+      "group": "2",
+      "volatility": 0.66,
+      "lastUpdate": "2025-11-08T07:23:30.280Z"
+    },
+    {
+      "id": "NATGAS",
+      "name": "Natural Gas",
+      "group": "3",
+      "volatility": 0.44,
+      "lastUpdate": "2025-11-08T13:38:30.280Z"
+    },
+    {
+      "id": "COPPER",
+      "name": "Copper Futures",
+      "group": "4",
+      "volatility": 0.25,
+      "lastUpdate": "2025-11-08T04:59:30.280Z"
+    },
+    {
+      "id": "PLATINUM",
+      "name": "Platinum",
+      "group": "5",
+      "volatility": 0.77,
+      "lastUpdate": "2025-11-08T05:26:30.280Z"
+    },
+    {
+      "id": "WHEAT",
+      "name": "Wheat Futures",
+      "group": "6",
+      "volatility": 0.19,
+      "lastUpdate": "2025-11-08T21:16:30.280Z"
+    },
+    {
+      "id": "CORN",
+      "name": "Corn Futures",
+      "group": "7",
+      "volatility": 0.43,
+      "lastUpdate": "2025-11-08T05:13:30.280Z"
+    },
+    {
+      "id": "SOYBEAN",
+      "name": "Soybean Futures",
+      "group": "8",
+      "volatility": 0.59,
+      "lastUpdate": "2025-11-08T06:25:30.280Z"
+    },
+    {
+      "id": "COFFEE",
+      "name": "Coffee Futures",
+      "group": "9",
+      "volatility": 0.48,
+      "lastUpdate": "2025-11-08T11:23:30.280Z"
+    },
+    {
+      "id": "SUGAR",
+      "name": "Sugar Futures",
+      "group": "0",
+      "volatility": 0.35,
+      "lastUpdate": "2025-11-08T18:52:30.280Z"
+    },
+    {
+      "id": "COTTON",
+      "name": "Cotton Futures",
+      "group": "1",
+      "volatility": 0.43,
+      "lastUpdate": "2025-11-08T09:15:30.280Z"
+    },
+    {
+      "id": "LUMBER",
+      "name": "Lumber Futures",
+      "group": "2",
+      "volatility": 0.41,
+      "lastUpdate": "2025-11-08T22:19:30.280Z"
+    },
+    {
+      "id": "PALLADIUM",
+      "name": "Palladium",
+      "group": "3",
+      "volatility": 0.39,
+      "lastUpdate": "2025-11-08T01:31:30.280Z"
+    },
+    {
+      "id": "CRUDE",
+      "name": "WTI Crude",
+      "group": "4",
+      "volatility": 0.34,
+      "lastUpdate": "2025-11-08T02:41:30.280Z"
+    },
+    {
+      "id": "EUR/USD",
+      "name": "Euro/US Dollar",
+      "group": "5",
+      "volatility": 0.22,
+      "lastUpdate": "2025-11-08T05:33:30.280Z"
+    },
+    {
+      "id": "GBP/USD",
+      "name": "British Pound/USD",
+      "group": "6",
+      "volatility": 0.54,
+      "lastUpdate": "2025-11-08T04:24:30.280Z"
+    },
+    {
+      "id": "USD/JPY",
+      "name": "US Dollar/Yen",
+      "group": "7",
+      "volatility": 0.67,
+      "lastUpdate": "2025-11-08T03:06:30.280Z"
+    },
+    {
+      "id": "USD/CHF",
+      "name": "US Dollar/Franc",
+      "group": "8",
+      "volatility": 0.26,
+      "lastUpdate": "2025-11-08T20:06:30.280Z"
+    },
+    {
+      "id": "AUD/USD",
+      "name": "Aussie Dollar/USD",
+      "group": "9",
+      "volatility": 0.33,
+      "lastUpdate": "2025-11-08T06:22:30.280Z"
+    },
+    {
+      "id": "USD/CAD",
+      "name": "US Dollar/CAD",
+      "group": "0",
+      "volatility": 0.52,
+      "lastUpdate": "2025-11-08T12:53:30.280Z"
+    },
+    {
+      "id": "NZD/USD",
+      "name": "NZ Dollar/USD",
+      "group": "1",
+      "volatility": 0.49,
+      "lastUpdate": "2025-11-08T09:32:30.280Z"
+    },
+    {
+      "id": "EUR/GBP",
+      "name": "Euro/Pound",
+      "group": "2",
+      "volatility": 0.7,
+      "lastUpdate": "2025-11-08T16:01:30.280Z"
+    },
+    {
+      "id": "EUR/JPY",
+      "name": "Euro/Yen",
+      "group": "3",
+      "volatility": 0.77,
+      "lastUpdate": "2025-11-08T05:58:30.280Z"
+    },
+    {
+      "id": "GBP/JPY",
+      "name": "Pound/Yen",
+      "group": "4",
+      "volatility": 0.56,
+      "lastUpdate": "2025-11-08T10:33:30.280Z"
+    },
+    {
+      "id": "SPX",
+      "name": "S&P 500 Index",
+      "group": "5",
+      "volatility": 0.66,
+      "lastUpdate": "2025-11-08T09:06:30.280Z"
+    },
+    {
+      "id": "NDX",
+      "name": "Nasdaq 100",
+      "group": "6",
+      "volatility": 0.83,
+      "lastUpdate": "2025-11-08T04:01:30.280Z"
+    },
+    {
+      "id": "DJI",
+      "name": "Dow Jones",
+      "group": "7",
+      "volatility": 0.54,
+      "lastUpdate": "2025-11-08T01:39:30.280Z"
+    },
+    {
+      "id": "RUT",
+      "name": "Russell 2000",
+      "group": "8",
+      "volatility": 0.53,
+      "lastUpdate": "2025-11-08T01:17:30.280Z"
+    },
+    {
+      "id": "VIX",
+      "name": "Volatility Index",
+      "group": "9",
+      "volatility": 0.43,
+      "lastUpdate": "2025-11-08T02:20:30.280Z"
+    },
+    {
+      "id": "DAX",
+      "name": "DAX Index",
+      "group": "0",
+      "volatility": 0.73,
+      "lastUpdate": "2025-11-08T18:47:30.280Z"
+    },
+    {
+      "id": "FTSE",
+      "name": "FTSE 100",
+      "group": "1",
+      "volatility": 0.58,
+      "lastUpdate": "2025-11-08T15:49:30.280Z"
+    },
+    {
+      "id": "NIKKEI",
+      "name": "Nikkei 225",
+      "group": "2",
+      "volatility": 0.71,
+      "lastUpdate": "2025-11-08T05:15:30.280Z"
+    },
+    {
+      "id": "HSI",
+      "name": "Hang Seng",
+      "group": "3",
+      "volatility": 0.65,
+      "lastUpdate": "2025-11-08T09:20:30.280Z"
+    },
+    {
+      "id": "CAC",
+      "name": "CAC 40",
+      "group": "4",
+      "volatility": 0.35,
+      "lastUpdate": "2025-11-08T00:58:30.280Z"
+    },
+    {
+      "id": "AAPL",
+      "name": "Apple Inc.",
+      "group": "5",
+      "volatility": 0.51,
+      "lastUpdate": "2025-11-08T07:38:30.280Z"
+    },
+    {
+      "id": "GOOGL",
+      "name": "Alphabet Inc.",
+      "group": "6",
+      "volatility": 0.43,
+      "lastUpdate": "2025-11-08T18:23:30.280Z"
+    },
+    {
+      "id": "MSFT",
+      "name": "Microsoft Corp.",
+      "group": "7",
+      "volatility": 0.2,
+      "lastUpdate": "2025-11-08T02:32:30.280Z"
+    },
+    {
+      "id": "AMZN",
+      "name": "Amazon.com Inc.",
+      "group": "8",
+      "volatility": 0.54,
+      "lastUpdate": "2025-11-08T21:37:30.280Z"
+    },
+    {
+      "id": "META",
+      "name": "Meta Platforms",
+      "group": "9",
+      "volatility": 0.41,
+      "lastUpdate": "2025-11-08T01:52:30.280Z"
+    },
+    {
+      "id": "TSLA",
+      "name": "Tesla Inc.",
+      "group": "0",
+      "volatility": 0.81,
+      "lastUpdate": "2025-11-08T14:08:30.280Z"
+    },
+    {
+      "id": "NVDA",
+      "name": "NVIDIA Corp.",
+      "group": "1",
+      "volatility": 0.32,
+      "lastUpdate": "2025-11-08T10:53:30.280Z"
+    },
+    {
+      "id": "JPM",
+      "name": "JPMorgan Chase",
+      "group": "2",
+      "volatility": 0.42,
+      "lastUpdate": "2025-11-08T09:57:30.280Z"
+    },
+    {
+      "id": "V",
+      "name": "Visa Inc.",
+      "group": "3",
+      "volatility": 0.4,
+      "lastUpdate": "2025-11-08T03:39:30.280Z"
+    },
+    {
+      "id": "JNJ",
+      "name": "Johnson & Johnson",
+      "group": "4",
+      "volatility": 0.57,
+      "lastUpdate": "2025-11-08T21:00:30.280Z"
+    },
+    {
+      "id": "WMT",
+      "name": "Walmart Inc.",
+      "group": "5",
+      "volatility": 0.2,
+      "lastUpdate": "2025-11-08T16:53:30.280Z"
+    },
+    {
+      "id": "PG",
+      "name": "Procter & Gamble",
+      "group": "6",
+      "volatility": 0.8,
+      "lastUpdate": "2025-11-08T14:13:30.280Z"
+    },
+    {
+      "id": "MA",
+      "name": "Mastercard Inc.",
+      "group": "7",
+      "volatility": 0.47,
+      "lastUpdate": "2025-11-08T03:14:30.280Z"
+    },
+    {
+      "id": "UNH",
+      "name": "UnitedHealth Group",
+      "group": "8",
+      "volatility": 0.46,
+      "lastUpdate": "2025-11-08T10:17:30.280Z"
+    },
+    {
+      "id": "HD",
+      "name": "Home Depot",
+      "group": "9",
+      "volatility": 0.33,
+      "lastUpdate": "2025-11-08T12:03:30.280Z"
+    }
+  ],
+  "connections": [
+    {
+      "source": "MSFT",
+      "target": "VIX",
+      "correlation": 0.61,
+      "pressure": 0.95
+    },
+    {
+      "source": "ADBE",
+      "target": "HD",
+      "correlation": 0.66,
+      "pressure": 0.67
+    },
+    {
+      "source": "INTC",
+      "target": "DJI",
+      "correlation": 0.37,
+      "pressure": 0.13
+    },
+    {
+      "source": "EUR/USD",
+      "target": "SUGAR",
+      "correlation": 0.66,
+      "pressure": 0.21
+    },
+    {
+      "source": "JPM",
+      "target": "OIL",
+      "correlation": 0.81,
+      "pressure": 0.05
+    },
+    {
+      "source": "WMT",
+      "target": "SOYBEAN",
+      "correlation": 0.41,
+      "pressure": 0.05
+    },
+    {
+      "source": "BNB",
+      "target": "NZD/USD",
+      "correlation": 0.83,
+      "pressure": 0.25
+    },
+    {
+      "source": "GOOGL",
+      "target": "ALGO",
+      "correlation": 0.3,
+      "pressure": 0.64
+    },
+    {
+      "source": "GOLD",
+      "target": "CRM",
+      "correlation": 0.89,
+      "pressure": 0.09
+    },
+    {
+      "source": "UNH",
+      "target": "HD",
+      "correlation": 0.34,
+      "pressure": 0.47
+    },
+    {
+      "source": "GOLD",
+      "target": "COTTON",
+      "correlation": 0.6,
+      "pressure": 0.67
+    },
+    {
+      "source": "DIS",
+      "target": "MA",
+      "correlation": 0.88,
+      "pressure": 0.35
+    },
+    {
+      "source": "INTC",
+      "target": "SILVER",
+      "correlation": 0.83,
+      "pressure": 0.45
+    },
+    {
+      "source": "ICP",
+      "target": "TMO",
+      "correlation": 0.62,
+      "pressure": 0.03
+    },
+    {
+      "source": "GOOGL",
+      "target": "DOT",
+      "correlation": 0.55,
+      "pressure": 0.25
+    },
+    {
+      "source": "GOLD",
+      "target": "META",
+      "correlation": 0.75,
+      "pressure": 0.06
+    },
+    {
+      "source": "TSLA",
+      "target": "NDX",
+      "correlation": 0.75,
+      "pressure": 0.81
+    },
+    {
+      "source": "TSLA",
+      "target": "SOYBEAN",
+      "correlation": 0.66,
+      "pressure": 0.48
+    },
+    {
+      "source": "SILVER",
+      "target": "VET",
+      "correlation": 0.57,
+      "pressure": 0.58
+    },
+    {
+      "source": "GOOGL",
+      "target": "USD/CAD",
+      "correlation": 0.02,
+      "pressure": 0.69
+    },
+    {
+      "source": "CRM",
+      "target": "DOT",
+      "correlation": 0.8,
+      "pressure": 0.93
+    },
+    {
+      "source": "MRK",
+      "target": "COTTON",
+      "correlation": 0.93,
+      "pressure": 0.46
+    },
+    {
+      "source": "META",
+      "target": "WHEAT",
+      "correlation": 0.61,
+      "pressure": 0.44
+    },
+    {
+      "source": "XLM",
+      "target": "SPX",
+      "correlation": 0.23,
+      "pressure": 0.71
+    },
+    {
+      "source": "COFFEE",
+      "target": "JNJ",
+      "correlation": 0.88,
+      "pressure": 0.48
+    },
+    {
+      "source": "AAPL",
+      "target": "NVDA",
+      "correlation": 0.14,
+      "pressure": 0.52
+    },
+    {
+      "source": "ICP",
+      "target": "USD/CHF",
+      "correlation": 0.66,
+      "pressure": 0.61
+    },
+    {
+      "source": "AAPL",
+      "target": "GBP/USD",
+      "correlation": 0.99,
+      "pressure": 0.98
+    },
+    {
+      "source": "PG",
+      "target": "FTSE",
+      "correlation": 0.97,
+      "pressure": 0.81
+    },
+    {
+      "source": "DIS",
+      "target": "V",
+      "correlation": 1,
+      "pressure": 0.03
+    },
+    {
+      "source": "FIL",
+      "target": "MSFT",
+      "correlation": 0.76,
+      "pressure": 0.78
+    },
+    {
+      "source": "BNB",
+      "target": "CAC",
+      "correlation": 0.58,
+      "pressure": 0.92
+    },
+    {
+      "source": "EUR/USD",
+      "target": "TMO",
+      "correlation": 0.27,
+      "pressure": 0.37
+    },
+    {
+      "source": "EUR/GBP",
+      "target": "TSLA",
+      "correlation": 0.25,
+      "pressure": 0.24
+    },
+    {
+      "source": "LUMBER",
+      "target": "DOGE",
+      "correlation": 0.73,
+      "pressure": 0.97
+    },
+    {
+      "source": "LINK",
+      "target": "VIX",
+      "correlation": 0.81,
+      "pressure": 0.02
+    },
+    {
+      "source": "USD/CHF",
+      "target": "MSFT",
+      "correlation": 0.38,
+      "pressure": 0.59
+    },
+    {
+      "source": "META",
+      "target": "XLM",
+      "correlation": 0.51,
+      "pressure": 0.84
+    },
+    {
+      "source": "PALLADIUM",
+      "target": "ETH",
+      "correlation": 0.58,
+      "pressure": 0.53
+    },
+    {
+      "source": "COFFEE",
+      "target": "JPM",
+      "correlation": 0.73,
+      "pressure": 0.8
+    },
+    {
+      "source": "LTC",
+      "target": "COFFEE",
+      "correlation": 0.88,
+      "pressure": 0.39
+    },
+    {
+      "source": "SOYBEAN",
+      "target": "BAC",
+      "correlation": 0.98,
+      "pressure": 0.18
+    },
+    {
+      "source": "USD/JPY",
+      "target": "USD/CAD",
+      "correlation": 0.67,
+      "pressure": 0.55
+    },
+    {
+      "source": "PALLADIUM",
+      "target": "META",
+      "correlation": 0.83,
+      "pressure": 0
+    },
+    {
+      "source": "NVDA",
+      "target": "JNJ",
+      "correlation": 0.94,
+      "pressure": 0
+    },
+    {
+      "source": "AMZN",
+      "target": "OIL",
+      "correlation": 0.14,
+      "pressure": 0.75
+    },
+    {
+      "source": "PALLADIUM",
+      "target": "AAPL",
+      "correlation": 0.53,
+      "pressure": 0.83
+    },
+    {
+      "source": "ADA",
+      "target": "NFLX",
+      "correlation": 0.81,
+      "pressure": 0.65
+    },
+    {
+      "source": "META",
+      "target": "LUMBER",
+      "correlation": 0.69,
+      "pressure": 0.85
+    },
+    {
+      "source": "SOYBEAN",
+      "target": "UNI",
+      "correlation": 0.69,
+      "pressure": 0.41
+    },
+    {
+      "source": "COFFEE",
+      "target": "NFLX",
+      "correlation": 0.25,
+      "pressure": 0.71
+    },
+    {
+      "source": "EUR/JPY",
+      "target": "ABBV",
+      "correlation": 0.95,
+      "pressure": 0.94
+    },
+    {
+      "source": "SOL",
+      "target": "GBP/USD",
+      "correlation": 0.99,
+      "pressure": 0.89
+    },
+    {
+      "source": "AUD/USD",
+      "target": "ADA",
+      "correlation": 0.94,
+      "pressure": 0.51
+    },
+    {
+      "source": "NVDA",
+      "target": "KO",
+      "correlation": 0.27,
+      "pressure": 0.32
+    },
+    {
+      "source": "UNH",
+      "target": "GOLD",
+      "correlation": 0.98,
+      "pressure": 0.02
+    },
+    {
+      "source": "UNH",
+      "target": "TMO",
+      "correlation": 0.97,
+      "pressure": 0.22
+    },
+    {
+      "source": "JNJ",
+      "target": "BTC",
+      "correlation": 0.63,
+      "pressure": 0.39
+    },
+    {
+      "source": "CSCO",
+      "target": "ABBV",
+      "correlation": 0.96,
+      "pressure": 0.63
+    },
+    {
+      "source": "ETH",
+      "target": "SILVER",
+      "correlation": 0.49,
+      "pressure": 0.45
+    },
+    {
+      "source": "ADBE",
+      "target": "CORN",
+      "correlation": 0.93,
+      "pressure": 0.66
+    },
+    {
+      "source": "COPPER",
+      "target": "AMZN",
+      "correlation": 0.69,
+      "pressure": 0.85
+    },
+    {
+      "source": "NEAR",
+      "target": "PALLADIUM",
+      "correlation": 0.58,
+      "pressure": 0.59
+    },
+    {
+      "source": "GBP/USD",
+      "target": "LUMBER",
+      "correlation": 0.53,
+      "pressure": 0.17
+    },
+    {
+      "source": "AAPL",
+      "target": "NZD/USD",
+      "correlation": 0.51,
+      "pressure": 0.33
+    },
+    {
+      "source": "GOOGL",
+      "target": "MA",
+      "correlation": 0.74,
+      "pressure": 0.28
+    },
+    {
+      "source": "META",
+      "target": "ALGO",
+      "correlation": 0.78,
+      "pressure": 0.14
+    },
+    {
+      "source": "USD/CAD",
+      "target": "CSCO",
+      "correlation": 0.41,
+      "pressure": 0.62
+    },
+    {
+      "source": "COTTON",
+      "target": "XLM",
+      "correlation": 0.87,
+      "pressure": 0.08
+    },
+    {
+      "source": "AMZN",
+      "target": "AAPL",
+      "correlation": 0.97,
+      "pressure": 0.47
+    },
+    {
+      "source": "ADBE",
+      "target": "GBP/USD",
+      "correlation": 0.71,
+      "pressure": 0.75
+    },
+    {
+      "source": "JNJ",
+      "target": "LINK",
+      "correlation": 0.5,
+      "pressure": 0.16
+    },
+    {
+      "source": "TSLA",
+      "target": "CORN",
+      "correlation": 0.29,
+      "pressure": 0.03
+    },
+    {
+      "source": "AAPL",
+      "target": "JNJ",
+      "correlation": 0.65,
+      "pressure": 0.52
+    },
+    {
+      "source": "COFFEE",
+      "target": "MA",
+      "correlation": 0.64,
+      "pressure": 0.68
+    },
+    {
+      "source": "OIL",
+      "target": "TSLA",
+      "correlation": 0.92,
+      "pressure": 0.09
+    },
+    {
+      "source": "PFE",
+      "target": "JPM",
+      "correlation": 0.52,
+      "pressure": 0.7
+    },
+    {
+      "source": "NATGAS",
+      "target": "NEAR",
+      "correlation": 0.45,
+      "pressure": 0.37
+    },
+    {
+      "source": "SOL",
+      "target": "CRUDE",
+      "correlation": 0.91,
+      "pressure": 0.88
+    },
+    {
+      "source": "KO",
+      "target": "SOYBEAN",
+      "correlation": 0.61,
+      "pressure": 0.52
+    },
+    {
+      "source": "EUR/GBP",
+      "target": "CORN",
+      "correlation": 0.53,
+      "pressure": 1
+    },
+    {
+      "source": "PFE",
+      "target": "ATOM",
+      "correlation": 0.11,
+      "pressure": 0.15
+    },
+    {
+      "source": "META",
+      "target": "MA",
+      "correlation": 0.47,
+      "pressure": 0.77
+    },
+    {
+      "source": "OIL",
+      "target": "ALGO",
+      "correlation": 0.51,
+      "pressure": 1
+    },
+    {
+      "source": "EUR/GBP",
+      "target": "LTC",
+      "correlation": 0.48,
+      "pressure": 0.75
+    },
+    {
+      "source": "NKE",
+      "target": "SOYBEAN",
+      "correlation": 0.39,
+      "pressure": 0.11
+    },
+    {
+      "source": "CAC",
+      "target": "DOGE",
+      "correlation": 0.22,
+      "pressure": 0.95
+    },
+    {
+      "source": "META",
+      "target": "SPX",
+      "correlation": 0.68,
+      "pressure": 0.07
+    },
+    {
+      "source": "COTTON",
+      "target": "MSFT",
+      "correlation": 0.31,
+      "pressure": 0.84
+    },
+    {
+      "source": "CSCO",
+      "target": "MA",
+      "correlation": 0.57,
+      "pressure": 0.42
+    },
+    {
+      "source": "MSFT",
+      "target": "MATIC",
+      "correlation": 0.13,
+      "pressure": 0.38
+    },
+    {
+      "source": "ICP",
+      "target": "LINK",
+      "correlation": 0.06,
+      "pressure": 0.96
+    },
+    {
+      "source": "NDX",
+      "target": "PFE",
+      "correlation": 0.23,
+      "pressure": 0.19
+    },
+    {
+      "source": "USD/CHF",
+      "target": "VIX",
+      "correlation": 0.98,
+      "pressure": 0.85
+    },
+    {
+      "source": "AMZN",
+      "target": "PEP",
+      "correlation": 0.78,
+      "pressure": 0.51
+    },
+    {
+      "source": "NIKKEI",
+      "target": "CSCO",
+      "correlation": 0.01,
+      "pressure": 0.84
+    },
+    {
+      "source": "TSLA",
+      "target": "V",
+      "correlation": 0.35,
+      "pressure": 0.14
+    },
+    {
+      "source": "GOOGL",
+      "target": "WMT",
+      "correlation": 0.76,
+      "pressure": 0.63
+    },
+    {
+      "source": "JNJ",
+      "target": "PALLADIUM",
+      "correlation": 0.77,
+      "pressure": 0.79
+    },
+    {
+      "source": "GOOGL",
+      "target": "CAC",
+      "correlation": 0.35,
+      "pressure": 0.53
+    },
+    {
+      "source": "DOT",
+      "target": "JPM",
+      "correlation": 0.4,
+      "pressure": 0.9
+    },
+    {
+      "source": "HD",
+      "target": "PLATINUM",
+      "correlation": 0.33,
+      "pressure": 0.03
+    },
+    {
+      "source": "FTSE",
+      "target": "AMZN",
+      "correlation": 0.95,
+      "pressure": 0.34
+    },
+    {
+      "source": "WMT",
+      "target": "JNJ",
+      "correlation": 0.83,
+      "pressure": 0.15
+    },
+    {
+      "source": "DOT",
+      "target": "ABBV",
+      "correlation": 0.15,
+      "pressure": 0.64
+    },
+    {
+      "source": "COPPER",
+      "target": "SUGAR",
+      "correlation": 0.75,
+      "pressure": 0.59
+    },
+    {
+      "source": "NVDA",
+      "target": "AMZN",
+      "correlation": 0.77,
+      "pressure": 0.62
+    },
+    {
+      "source": "UNI",
+      "target": "DAX",
+      "correlation": 0.35,
+      "pressure": 0.43
+    },
+    {
+      "source": "WMT",
+      "target": "V",
+      "correlation": 0.32,
+      "pressure": 0.23
+    },
+    {
+      "source": "PLATINUM",
+      "target": "ATOM",
+      "correlation": 0.53,
+      "pressure": 0.35
+    },
+    {
+      "source": "ATOM",
+      "target": "EUR/GBP",
+      "correlation": 0.17,
+      "pressure": 0.62
+    },
+    {
+      "source": "MSFT",
+      "target": "AAPL",
+      "correlation": 0.6,
+      "pressure": 0.78
+    },
+    {
+      "source": "HD",
+      "target": "ALGO",
+      "correlation": 0.74,
+      "pressure": 0.4
+    },
+    {
+      "source": "NFLX",
+      "target": "MA",
+      "correlation": 0.94,
+      "pressure": 0.43
+    },
+    {
+      "source": "JPM",
+      "target": "TSLA",
+      "correlation": 0.2,
+      "pressure": 0.5
+    },
+    {
+      "source": "GOOGL",
+      "target": "MRK",
+      "correlation": 0.61,
+      "pressure": 0.8
+    },
+    {
+      "source": "ADA",
+      "target": "EUR/GBP",
+      "correlation": 0.48,
+      "pressure": 0.96
+    },
+    {
+      "source": "GBP/JPY",
+      "target": "ALGO",
+      "correlation": 0.43,
+      "pressure": 0.27
+    },
+    {
+      "source": "DOT",
+      "target": "ABT",
+      "correlation": 0.33,
+      "pressure": 0.03
+    },
+    {
+      "source": "USD/CAD",
+      "target": "DIS",
+      "correlation": 0.39,
+      "pressure": 0.04
+    },
+    {
+      "source": "VIX",
+      "target": "V",
+      "correlation": 0.8,
+      "pressure": 0.55
+    },
+    {
+      "source": "ALGO",
+      "target": "SOL",
+      "correlation": 0.73,
+      "pressure": 0.59
+    },
+    {
+      "source": "BTC",
+      "target": "RUT",
+      "correlation": 0.91,
+      "pressure": 0.74
+    },
+    {
+      "source": "GBP/USD",
+      "target": "ICP",
+      "correlation": 0.5,
+      "pressure": 0.6
+    },
+    {
+      "source": "UNH",
+      "target": "NKE",
+      "correlation": 0.54,
+      "pressure": 0.41
+    },
+    {
+      "source": "NKE",
+      "target": "USD/JPY",
+      "correlation": 0.48,
+      "pressure": 0.19
+    },
+    {
+      "source": "CRUDE",
+      "target": "VIX",
+      "correlation": 0.67,
+      "pressure": 0.99
+    },
+    {
+      "source": "MSFT",
+      "target": "TSLA",
+      "correlation": 0.7,
+      "pressure": 0.51
+    },
+    {
+      "source": "AVAX",
+      "target": "AAPL",
+      "correlation": 0.38,
+      "pressure": 0.06
+    },
+    {
+      "source": "SUGAR",
+      "target": "GOOGL",
+      "correlation": 0.24,
+      "pressure": 0.73
+    },
+    {
+      "source": "BAC",
+      "target": "KO",
+      "correlation": 0.29,
+      "pressure": 0.38
+    },
+    {
+      "source": "PG",
+      "target": "ICP",
+      "correlation": 0.79,
+      "pressure": 0.86
+    },
+    {
+      "source": "FTSE",
+      "target": "ABT",
+      "correlation": 0.87,
+      "pressure": 0.37
+    },
+    {
+      "source": "TMO",
+      "target": "TSLA",
+      "correlation": 0.8,
+      "pressure": 0.75
+    },
+    {
+      "source": "META",
+      "target": "ICP",
+      "correlation": 0.38,
+      "pressure": 0.62
+    },
+    {
+      "source": "PALLADIUM",
+      "target": "MRK",
+      "correlation": 0.92,
+      "pressure": 0.8
+    },
+    {
+      "source": "SILVER",
+      "target": "NVDA",
+      "correlation": 0.53,
+      "pressure": 0.96
+    },
+    {
+      "source": "FTSE",
+      "target": "V",
+      "correlation": 0.91,
+      "pressure": 0.72
+    },
+    {
+      "source": "HSI",
+      "target": "PEP",
+      "correlation": 0.22,
+      "pressure": 0.84
+    },
+    {
+      "source": "MATIC",
+      "target": "WHEAT",
+      "correlation": 0.9,
+      "pressure": 0.41
+    },
+    {
+      "source": "DOT",
+      "target": "NATGAS",
+      "correlation": 0.11,
+      "pressure": 0.29
+    },
+    {
+      "source": "WHEAT",
+      "target": "NATGAS",
+      "correlation": 0.32,
+      "pressure": 0.09
+    },
+    {
+      "source": "MSFT",
+      "target": "ABBV",
+      "correlation": 0.42,
+      "pressure": 1
+    },
+    {
+      "source": "GBP/USD",
+      "target": "PEP",
+      "correlation": 0.44,
+      "pressure": 0.21
+    },
+    {
+      "source": "PFE",
+      "target": "META",
+      "correlation": 0.99,
+      "pressure": 0.64
+    },
+    {
+      "source": "AVAX",
+      "target": "SPX",
+      "correlation": 0.3,
+      "pressure": 0.58
+    },
+    {
+      "source": "XLM",
+      "target": "COFFEE",
+      "correlation": 0.48,
+      "pressure": 0.49
+    },
+    {
+      "source": "VET",
+      "target": "ICP",
+      "correlation": 0.75,
+      "pressure": 0.22
+    },
+    {
+      "source": "USD/CHF",
+      "target": "FTSE",
+      "correlation": 0.71,
+      "pressure": 0.14
+    },
+    {
+      "source": "SOL",
+      "target": "ADBE",
+      "correlation": 0.91,
+      "pressure": 0.1
+    },
+    {
+      "source": "NATGAS",
+      "target": "SPX",
+      "correlation": 0.41,
+      "pressure": 0.03
+    },
+    {
+      "source": "FIL",
+      "target": "NVDA",
+      "correlation": 0.85,
+      "pressure": 0.48
+    },
+    {
+      "source": "KO",
+      "target": "COTTON",
+      "correlation": 0.67,
+      "pressure": 0.53
+    },
+    {
+      "source": "HSI",
+      "target": "MA",
+      "correlation": 0.29,
+      "pressure": 0
+    },
+    {
+      "source": "NIKKEI",
+      "target": "RUT",
+      "correlation": 0.64,
+      "pressure": 0.08
+    },
+    {
+      "source": "MRK",
+      "target": "KO",
+      "correlation": 0.86,
+      "pressure": 0.46
+    },
+    {
+      "source": "UNH",
+      "target": "ABBV",
+      "correlation": 0.72,
+      "pressure": 0.73
+    },
+    {
+      "source": "EUR/JPY",
+      "target": "PG",
+      "correlation": 0.61,
+      "pressure": 0.86
+    },
+    {
+      "source": "NVDA",
+      "target": "USD/CAD",
+      "correlation": 0.9,
+      "pressure": 0.36
+    },
+    {
+      "source": "NFLX",
+      "target": "TSLA",
+      "correlation": 0.62,
+      "pressure": 0.62
+    },
+    {
+      "source": "MRK",
+      "target": "PG",
+      "correlation": 0.98,
+      "pressure": 0.72
+    },
+    {
+      "source": "MA",
+      "target": "PEP",
+      "correlation": 0.85,
+      "pressure": 0.07
+    },
+    {
+      "source": "BTC",
+      "target": "SILVER",
+      "correlation": 0.73,
+      "pressure": 1
+    },
+    {
+      "source": "NDX",
+      "target": "GBP/JPY",
+      "correlation": 0.86,
+      "pressure": 0.99
+    },
+    {
+      "source": "DAX",
+      "target": "AAPL",
+      "correlation": 0.7,
+      "pressure": 0.9
+    },
+    {
+      "source": "DOGE",
+      "target": "PLATINUM",
+      "correlation": 0.11,
+      "pressure": 0.37
+    },
+    {
+      "source": "INTC",
+      "target": "EUR/JPY",
+      "correlation": 0.34,
+      "pressure": 0.68
+    },
+    {
+      "source": "PFE",
+      "target": "DJI",
+      "correlation": 0.43,
+      "pressure": 0.02
+    },
+    {
+      "source": "HD",
+      "target": "CRM",
+      "correlation": 0.96,
+      "pressure": 0.97
+    },
+    {
+      "source": "ADA",
+      "target": "SOL",
+      "correlation": 0.93,
+      "pressure": 0.74
+    },
+    {
+      "source": "PFE",
+      "target": "SOL",
+      "correlation": 0.29,
+      "pressure": 0.58
+    },
+    {
+      "source": "META",
+      "target": "USD/CAD",
+      "correlation": 0.86,
+      "pressure": 0.84
+    },
+    {
+      "source": "AUD/USD",
+      "target": "NZD/USD",
+      "correlation": 0.37,
+      "pressure": 0.26
+    },
+    {
+      "source": "UNI",
+      "target": "PFE",
+      "correlation": 0.97,
+      "pressure": 0.16
+    },
+    {
+      "source": "WHEAT",
+      "target": "NIKKEI",
+      "correlation": 0.47,
+      "pressure": 0.91
+    },
+    {
+      "source": "JNJ",
+      "target": "NZD/USD",
+      "correlation": 0.31,
+      "pressure": 0.2
+    },
+    {
+      "source": "GOLD",
+      "target": "AMZN",
+      "correlation": 0.53,
+      "pressure": 0.83
+    },
+    {
+      "source": "NVDA",
+      "target": "META",
+      "correlation": 0.71,
+      "pressure": 0.39
+    },
+    {
+      "source": "UNH",
+      "target": "LUMBER",
+      "correlation": 0.91,
+      "pressure": 0.2
+    },
+    {
+      "source": "JPM",
+      "target": "AMZN",
+      "correlation": 0.32,
+      "pressure": 0.24
+    },
+    {
+      "source": "V",
+      "target": "META",
+      "correlation": 0.52,
+      "pressure": 0.5
+    },
+    {
+      "source": "SOL",
+      "target": "GOLD",
+      "correlation": 0.36,
+      "pressure": 0.26
+    },
+    {
+      "source": "USD/CHF",
+      "target": "VET",
+      "correlation": 0.6,
+      "pressure": 0.97
+    },
+    {
+      "source": "NATGAS",
+      "target": "NVDA",
+      "correlation": 0.93,
+      "pressure": 0.51
+    },
+    {
+      "source": "EUR/USD",
+      "target": "PG",
+      "correlation": 0.26,
+      "pressure": 0.55
+    },
+    {
+      "source": "MA",
+      "target": "BNB",
+      "correlation": 0.36,
+      "pressure": 0.22
+    },
+    {
+      "source": "SOL",
+      "target": "OIL",
+      "correlation": 0.57,
+      "pressure": 0.07
+    },
+    {
+      "source": "FIL",
+      "target": "GBP/JPY",
+      "correlation": 0.24,
+      "pressure": 0.02
+    },
+    {
+      "source": "ABBV",
+      "target": "PFE",
+      "correlation": 0.56,
+      "pressure": 0.92
+    },
+    {
+      "source": "MSFT",
+      "target": "PALLADIUM",
+      "correlation": 0.54,
+      "pressure": 0.63
+    },
+    {
+      "source": "CSCO",
+      "target": "NVDA",
+      "correlation": 0.32,
+      "pressure": 0.7
+    },
+    {
+      "source": "NIKKEI",
+      "target": "SILVER",
+      "correlation": 0.71,
+      "pressure": 0.34
+    },
+    {
+      "source": "EUR/USD",
+      "target": "CORN",
+      "correlation": 0.38,
+      "pressure": 0.49
+    },
+    {
+      "source": "PFE",
+      "target": "DOGE",
+      "correlation": 0.58,
+      "pressure": 0.14
+    },
+    {
+      "source": "FIL",
+      "target": "SOL",
+      "correlation": 0.37,
+      "pressure": 0.36
+    },
+    {
+      "source": "ETH",
+      "target": "PEP",
+      "correlation": 0.84,
+      "pressure": 0.04
+    },
+    {
+      "source": "LTC",
+      "target": "NIKKEI",
+      "correlation": 0.75,
+      "pressure": 0.46
+    },
+    {
+      "source": "V",
+      "target": "WHEAT",
+      "correlation": 0.24,
+      "pressure": 0.19
+    },
+    {
+      "source": "NIKKEI",
+      "target": "PFE",
+      "correlation": 0.67,
+      "pressure": 0.41
+    },
+    {
+      "source": "NDX",
+      "target": "CORN",
+      "correlation": 0.61,
+      "pressure": 0.82
+    },
+    {
+      "source": "LUMBER",
+      "target": "AVAX",
+      "correlation": 0.37,
+      "pressure": 0.69
+    },
+    {
+      "source": "JPM",
+      "target": "V",
+      "correlation": 0.83,
+      "pressure": 0.8
+    },
+    {
+      "source": "CRUDE",
+      "target": "CRM",
+      "correlation": 0.31,
+      "pressure": 0.12
+    },
+    {
+      "source": "NVDA",
+      "target": "NZD/USD",
+      "correlation": 0.6,
+      "pressure": 0.55
+    },
+    {
+      "source": "NKE",
+      "target": "SUGAR",
+      "correlation": 0.91,
+      "pressure": 0.31
+    },
+    {
+      "source": "UNI",
+      "target": "HD",
+      "correlation": 0.91,
+      "pressure": 0.73
+    },
+    {
+      "source": "GOOGL",
+      "target": "OIL",
+      "correlation": 0.94,
+      "pressure": 0.23
+    },
+    {
+      "source": "WMT",
+      "target": "TSLA",
+      "correlation": 0.55,
+      "pressure": 0.28
+    },
+    {
+      "source": "HSI",
+      "target": "AAPL",
+      "correlation": 0.7,
+      "pressure": 0.06
+    },
+    {
+      "source": "V",
+      "target": "SOL",
+      "correlation": 0.71,
+      "pressure": 0.33
+    },
+    {
+      "source": "ICP",
+      "target": "VIX",
+      "correlation": 0.8,
+      "pressure": 0.85
+    },
+    {
+      "source": "ETH",
+      "target": "CRM",
+      "correlation": 0.2,
+      "pressure": 0.49
+    },
+    {
+      "source": "CSCO",
+      "target": "DJI",
+      "correlation": 0.66,
+      "pressure": 0.6
+    },
+    {
+      "source": "JPM",
+      "target": "PALLADIUM",
+      "correlation": 0.81,
+      "pressure": 0.29
+    },
+    {
+      "source": "DIS",
+      "target": "TSLA",
+      "correlation": 0.07,
+      "pressure": 0.77
+    },
+    {
+      "source": "JPM",
+      "target": "ABBV",
+      "correlation": 0.61,
+      "pressure": 0.45
+    },
+    {
+      "source": "JNJ",
+      "target": "EUR/JPY",
+      "correlation": 0.97,
+      "pressure": 0.48
+    },
+    {
+      "source": "VET",
+      "target": "DOGE",
+      "correlation": 0.18,
+      "pressure": 0.99
+    },
+    {
+      "source": "CORN",
+      "target": "V",
+      "correlation": 0.28,
+      "pressure": 0.08
+    },
+    {
+      "source": "AMZN",
+      "target": "NFLX",
+      "correlation": 0.8,
+      "pressure": 0.72
+    },
+    {
+      "source": "AVAX",
+      "target": "CSCO",
+      "correlation": 0.53,
+      "pressure": 0.75
+    },
+    {
+      "source": "PG",
+      "target": "BAC",
+      "correlation": 0.57,
+      "pressure": 0.95
+    },
+    {
+      "source": "LINK",
+      "target": "NVDA",
+      "correlation": 0.2,
+      "pressure": 0.97
+    },
+    {
+      "source": "SOYBEAN",
+      "target": "HD",
+      "correlation": 0.58,
+      "pressure": 0.42
+    },
+    {
+      "source": "UNI",
+      "target": "WMT",
+      "correlation": 0.85,
+      "pressure": 0.67
+    },
+    {
+      "source": "ADBE",
+      "target": "NVDA",
+      "correlation": 0.96,
+      "pressure": 0.61
+    },
+    {
+      "source": "ATOM",
+      "target": "MRK",
+      "correlation": 0.78,
+      "pressure": 0.21
+    },
+    {
+      "source": "CRM",
+      "target": "GBP/USD",
+      "correlation": 0.95,
+      "pressure": 0.38
+    },
+    {
+      "source": "V",
+      "target": "ADBE",
+      "correlation": 0.93,
+      "pressure": 0.36
+    },
+    {
+      "source": "DOT",
+      "target": "SILVER",
+      "correlation": 0.98,
+      "pressure": 0.76
+    },
+    {
+      "source": "DIS",
+      "target": "JNJ",
+      "correlation": 0.86,
+      "pressure": 0.51
+    },
+    {
+      "source": "MSFT",
+      "target": "NDX",
+      "correlation": 0.82,
+      "pressure": 0.74
+    },
+    {
+      "source": "XLM",
+      "target": "EUR/USD",
+      "correlation": 0.8,
+      "pressure": 0.88
+    },
+    {
+      "source": "ADBE",
+      "target": "VIX",
+      "correlation": 0.55,
+      "pressure": 0.51
+    },
+    {
+      "source": "PG",
+      "target": "RUT",
+      "correlation": 0.67,
+      "pressure": 0.19
+    },
+    {
+      "source": "ALGO",
+      "target": "DIS",
+      "correlation": 0.92,
+      "pressure": 0.96
+    },
+    {
+      "source": "WHEAT",
+      "target": "WMT",
+      "correlation": 0.4,
+      "pressure": 0.17
+    },
+    {
+      "source": "EUR/GBP",
+      "target": "WHEAT",
+      "correlation": 0.2,
+      "pressure": 0.16
+    },
+    {
+      "source": "NATGAS",
+      "target": "HD",
+      "correlation": 1,
+      "pressure": 0.96
+    },
+    {
+      "source": "NATGAS",
+      "target": "BTC",
+      "correlation": 0.59,
+      "pressure": 0.45
+    },
+    {
+      "source": "TMO",
+      "target": "ABBV",
+      "correlation": 0.43,
+      "pressure": 0.11
+    },
+    {
+      "source": "UNH",
+      "target": "UNH",
+      "correlation": 0.59,
+      "pressure": 0.07
+    },
+    {
+      "source": "BAC",
+      "target": "JPM",
+      "correlation": 0.55,
+      "pressure": 0.54
+    },
+    {
+      "source": "GBP/USD",
+      "target": "V",
+      "correlation": 0.53,
+      "pressure": 0.74
+    },
+    {
+      "source": "COPPER",
+      "target": "NEAR",
+      "correlation": 0.12,
+      "pressure": 0.3
+    },
+    {
+      "source": "PG",
+      "target": "JPM",
+      "correlation": 0.84,
+      "pressure": 0.76
+    },
+    {
+      "source": "GOLD",
+      "target": "ABT",
+      "correlation": 0.44,
+      "pressure": 0.57
+    },
+    {
+      "source": "GBP/JPY",
+      "target": "CRM",
+      "correlation": 0.96,
+      "pressure": 0.93
+    },
+    {
+      "source": "META",
+      "target": "ADA",
+      "correlation": 0.91,
+      "pressure": 0.54
+    },
+    {
+      "source": "PFE",
+      "target": "AMZN",
+      "correlation": 0.86,
+      "pressure": 0.95
+    }
+  ],
+  "hotTrades": [
+    {
+      "id": "trade-0",
+      "title": "Ranging market conditions",
+      "relatedNodes": [
+        "GOLD"
+      ],
+      "confidence": 0.59,
+      "action": "NEUTRAL"
+    },
+    {
+      "id": "trade-1",
+      "title": "Sideways momentum",
+      "relatedNodes": [
+        "ICP"
+      ],
+      "confidence": 0.69,
+      "action": "NEUTRAL"
+    },
+    {
+      "id": "trade-2",
+      "title": "Negative correlation signal",
+      "relatedNodes": [
+        "GBP/USD",
+        "CSCO"
+      ],
+      "confidence": 0.65,
+      "action": "SHORT"
+    },
+    {
+      "id": "trade-3",
+      "title": "Golden cross formation",
+      "relatedNodes": [
+        "NDX"
+      ],
+      "confidence": 0.58,
+      "action": "LONG"
+    },
+    {
+      "id": "trade-4",
+      "title": "Strong selling pressure",
+      "relatedNodes": [
+        "NFLX"
+      ],
+      "confidence": 0.69,
+      "action": "SHORT"
+    },
+    {
+      "id": "trade-5",
+      "title": "Sideways momentum",
+      "relatedNodes": [
+        "JPM"
+      ],
+      "confidence": 0.88,
+      "action": "NEUTRAL"
+    },
+    {
+      "id": "trade-6",
+      "title": "Consolidation phase",
+      "relatedNodes": [
+        "ALGO"
+      ],
+      "confidence": 0.72,
+      "action": "NEUTRAL"
+    },
+    {
+      "id": "trade-7",
+      "title": "Sell signal on technical indicators",
+      "relatedNodes": [
+        "KO"
+      ],
+      "confidence": 0.83,
+      "action": "SHORT"
+    },
+    {
+      "id": "trade-8",
+      "title": "Hold current positions",
+      "relatedNodes": [
+        "ADBE"
+      ],
+      "confidence": 0.68,
+      "action": "NEUTRAL"
+    },
+    {
+      "id": "trade-9",
+      "title": "Bearish reversal pattern",
+      "relatedNodes": [
+        "TSLA",
+        "NZD/USD",
+        "CRM"
+      ],
+      "confidence": 0.77,
+      "action": "SHORT"
+    },
+    {
+      "id": "trade-10",
+      "title": "Waiting for confirmation",
+      "relatedNodes": [
+        "TMO"
+      ],
+      "confidence": 0.61,
+      "action": "NEUTRAL"
+    },
+    {
+      "id": "trade-11",
+      "title": "Buy signal on technical indicators",
+      "relatedNodes": [
+        "JNJ"
+      ],
+      "confidence": 0.78,
+      "action": "LONG"
+    },
+    {
+      "id": "trade-12",
+      "title": "Downward momentum accelerating",
+      "relatedNodes": [
+        "DAX"
+      ],
+      "confidence": 0.55,
+      "action": "SHORT"
+    },
+    {
+      "id": "trade-13",
+      "title": "Downward momentum accelerating",
+      "relatedNodes": [
+        "OIL"
+      ],
+      "confidence": 0.67,
+      "action": "SHORT"
+    },
+    {
+      "id": "trade-14",
+      "title": "Monitor for breakout",
+      "relatedNodes": [
+        "USD/CHF",
+        "MA",
+        "AMZN"
+      ],
+      "confidence": 0.63,
+      "action": "NEUTRAL"
+    }
+  ]
+}
