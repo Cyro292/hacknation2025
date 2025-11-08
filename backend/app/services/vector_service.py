@@ -1,10 +1,15 @@
-from app.schemas.vectors import Vector
+from app.schemas.vectors import Vector, Dataset
 from app.core.config import settings
 # from openai import OpenAI
 
 
 class VectorService:
     """Service layer for Vector operations"""
+
+    @staticmethod
+    def retrieve_vector(id: int) -> Vector:
+        """Retrieve a vector by ID"""
+        return None
 
     @staticmethod
     def retrieve_closest_vector(vector: Vector) -> Vector:
