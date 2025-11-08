@@ -1,4 +1,4 @@
-from app.schemas.vector_schema import Vector, Dataset
+from app.schemas.schemas import Vector, Dataset
 from app.core.config import settings
 # from openai import OpenAI
 
