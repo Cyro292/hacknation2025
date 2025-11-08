@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.database.base import init_db
 from app.routers import api_router
 
 # Initialize FastAPI app
@@ -28,7 +27,8 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup_event():
     """Initialize database on startup"""
-    init_db()
+    print("Startup event")
+    print(settings.OPENAI_API_KEY)
 
 
 # Include routers
