@@ -34,3 +34,7 @@ ENV/
 
 # dsstore files
 *.DS_Store
+
+# Logs
+*.log
+server.log

@@ -14,6 +14,11 @@ class Settings:
     
     # OpenAI Settings
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY")
+
+    # Supabase configuration
+    SUPABASE_URL: str = os.getenv("SUPABASE_URL")
+    SUPABASE_API_KEY: str = os.getenv("SUPABASE_API_KEY")
+    SCRAPE_INTERVAL_HOURS: int = int(os.getenv("SCRAPE_INTERVAL_HOURS", 1))
     
     # CORS Settings
     BACKEND_CORS_ORIGINS: List[str] = [
