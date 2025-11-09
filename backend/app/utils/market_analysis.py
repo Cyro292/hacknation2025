@@ -2,13 +2,200 @@
 Market Analysis Utilities
 Provides AI-powered analysis of market relationships and correlations
 """
-from typing import Optional, Literal
+from typing import Optional, Literal, Dict
 from pydantic import BaseModel, Field
 from app.schemas.market_schema import Market
 from app.utils.openai_service import OpenAIHelper
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def _calculate_expected_values(
+    market1: Market,
+    market2: Market,
+    correlation: float
+) -> tuple[Dict[str, float], str]:
+    """
+    DETERMINISTICALLY calculate expected values and best betting strategy.
+    
+    This function uses PURE MATHEMATICS to:
+    1. Calculate probability of all 4 scenarios based on market prices and correlation
+    2. Calculate expected value (EV) for each betting strategy
+    3. Select the strategy with HIGHEST EV (no AI involved)
+    
+    Scenarios:
+    1. Both Event 1 and Event 2 occur
+    2. Event 1 occurs, Event 2 doesn't
+    3. Event 2 occurs, Event 1 doesn't  
+    4. Neither event occurs
+    
+    Strategies evaluated:
+    - Bet YES on Event 1 (win if E1 occurs)
+    - Bet YES on Event 2 (win if E2 occurs)
+    - Bet NO on Event 1 (win if E1 doesn't occur)
+    - Bet NO on Event 2 (win if E2 doesn't occur)
+    - Arbitrage (bet opposite sides when correlated + mispriced)
+    
+    Args:
+        market1: First market (with prices)
+        market2: Second market (with prices)
+        correlation: AI correlation score (0-1) - only used as input, not for decision-making
+        
+    Returns:
+        Tuple of (expected_values dict, best_strategy string)
+        
+    Note:
+        The best strategy is selected PURELY by comparing expected values.
+        No AI is used in the decision - only mathematical calculations.
+    """
+    try:
+        # Extract probabilities from market prices (first outcome typically)
+        # These represent what the MARKET thinks (often assuming independence)
+        market_p1 = float(market1.outcome_prices[0]) if market1.outcome_prices else 0.5
+        market_p2 = float(market2.outcome_prices[0]) if market2.outcome_prices else 0.5
+        
+        # Calculate what probabilities SHOULD be given the correlation
+        # The market often prices events as independent, but they may be dependent
+        
+        # For INDEPENDENT events: P(both) = P1 * P2
+        p_both_independent = market_p1 * market_p2
+        
+        # For CORRELATED/DEPENDENT events, adjust based on correlation strength
+        if correlation > 0.8:
+            # Strong correlation - likely mutually exclusive or causally linked
+            if market_p1 + market_p2 > 1:
+                # Likely mutually exclusive (inverse correlation)
+                p_both = min(market_p1, market_p2) * (1 - correlation)
+            else:
+                # Likely positive correlation (one causes the other)
+                p_both = market_p1 * market_p2 * (1 + correlation)
+        else:
+            # Weaker correlation
+            p_both = market_p1 * market_p2 * (1 + correlation * 0.5)
+        
+        # Normalize to ensure probabilities sum to 1
+        p_both = max(0, min(p_both, min(market_p1, market_p2)))
+        
+        # Calculate scenario probabilities based on ADJUSTED correlation-aware probabilities
+        p_1_only = market_p1 - p_both
+        p_2_only = market_p2 - p_both
+        p_neither = 1 - p_both - p_1_only - p_2_only
+        
+        # Ensure non-negative probabilities
+        p_1_only = max(0, p_1_only)
+        p_2_only = max(0, p_2_only)
+        p_neither = max(0, p_neither)
+        
+        # Normalize if probabilities don't sum to 1 (due to correlation adjustments)
+        total = p_both + p_1_only + p_2_only + p_neither
+        if total > 0 and abs(total - 1.0) > 0.001:
+            p_both /= total
+            p_1_only /= total
+            p_2_only /= total
+            p_neither /= total
+        
+        # DETERMINISTIC EXPECTED VALUE CALCULATIONS
+        # Compare our correlation-adjusted "true" probabilities against market prices
+        # 
+        # KEY INSIGHT: Markets often price events as if they're INDEPENDENT
+        # But if events are CORRELATED, the true probabilities differ
+        # This creates arbitrage opportunities!
+        
+        # TRUE probability that E1 occurs (correlation-adjusted)
+        true_p1 = p_both + p_1_only
+        true_p2 = p_both + p_2_only
+        
+        # Strategy 1: Bet YES on Event 1
+        # Cost: market_p1, Payout if win: $1, Win probability: true_p1
+        # EV = (win_prob * payout) - cost
+        ev_bet_event1 = (true_p1 * 1.0) - market_p1 if market_p1 > 0 else 0
+        
+        # Strategy 2: Bet YES on Event 2
+        ev_bet_event2 = (true_p2 * 1.0) - market_p2 if market_p2 > 0 else 0
+        
+        # Strategy 3: Bet NO on Event 1
+        # Cost: (1-market_p1), Payout if win: $1, Win if E1 doesn't occur
+        true_not_p1 = p_2_only + p_neither
+        ev_bet_no_event1 = (true_not_p1 * 1.0) - (1 - market_p1) if market_p1 < 1 else 0
+        
+        # Strategy 4: Bet NO on Event 2
+        # Cost: (1-market_p2), Win if E2 doesn't occur
+        true_not_p2 = p_1_only + p_neither
+        ev_bet_no_event2 = (true_not_p2 * 1.0) - (1 - market_p2) if market_p2 < 1 else 0
+        
+        # Strategy 5: Arbitrage - if correlation is high and prices differ significantly
+        # Bet opposite sides when markets are correlated but mispriced
+        ev_arbitrage = 0
+        if correlation > 0.7 and abs(market_p1 - market_p2) > 0.15:
+            # Strong correlation + price differential = arbitrage opportunity
+            # For mutually exclusive events, betting both sides can guarantee profit
+            if market_p1 > market_p2:
+                # Bet NO on E1 (costs 1-market_p1), YES on E2 (costs market_p2)
+                # Total cost: (1-market_p1) + market_p2 = 1 - market_p1 + market_p2
+                # Payout: always $1 (one will win), so EV = 1 - cost
+                ev_arbitrage = 1.0 - ((1 - market_p1) + market_p2)
+            else:
+                # Bet YES on E1, NO on E2
+                ev_arbitrage = 1.0 - (market_p1 + (1 - market_p2))
+        
+        # Find the best EV across all strategies
+        all_evs = [ev_bet_event1, ev_bet_event2, ev_bet_no_event1, ev_bet_no_event2, ev_arbitrage]
+        best_ev = max(all_evs)
+        
+        expected_values = {
+            # Overall best opportunity
+            "best_ev": round(best_ev, 4),
+            
+            # Expected values for each strategy (profit per $1 wagered)
+            "ev_yes_event1": round(ev_bet_event1, 4),
+            "ev_yes_event2": round(ev_bet_event2, 4),
+            "ev_no_event1": round(ev_bet_no_event1, 4),
+            "ev_no_event2": round(ev_bet_no_event2, 4),
+            "ev_arbitrage": round(ev_arbitrage, 4),
+            
+            # Market prices used
+            "market1_price": round(market_p1, 4),
+            "market2_price": round(market_p2, 4),
+            "correlation_used": round(correlation, 4)
+        }
+        
+        # DETERMINISTICALLY determine best strategy based on HIGHEST expected value
+        strategies = {
+            "Bet YES on Event 1": ev_bet_event1,
+            "Bet YES on Event 2": ev_bet_event2,
+            "Bet NO on Event 1": ev_bet_no_event1,
+            "Bet NO on Event 2": ev_bet_no_event2,
+            "Arbitrage (opposite sides)": ev_arbitrage
+        }
+        
+        # Find strategy with highest EV (pure mathematics, no AI)
+        best = max(strategies.items(), key=lambda x: x[1])
+        best_strategy = f"{best[0]} (EV: {best[1]:+.4f} or {best[1]*100:+.2f}%)"
+        
+        # Add deterministic reasoning based on the numbers
+        if best[1] > 0.05:
+            best_strategy += f" - Strong positive edge! Expected to profit ${best[1]:.2f} per $1 wagered"
+        elif best[1] > 0.01:
+            best_strategy += f" - Moderate positive edge, expected to profit ${best[1]:.2f} per $1"
+        elif best[1] > 0:
+            best_strategy += f" - Slight positive edge"
+        else:
+            best_strategy += f" - No positive EV strategies found (market is efficient or overpriced)"
+        
+        # Add correlation insight
+        if correlation > 0.8 and abs(market_p1 - market_p2) > 0.15:
+            best_strategy += f" | High correlation ({correlation:.2f}) + price gap ({abs(market_p1-market_p2):.2f}) = strong arbitrage potential"
+        elif correlation > 0.8:
+            best_strategy += f" | High correlation ({correlation:.2f}) but similar prices - limited arbitrage"
+        
+        return expected_values, best_strategy
+        
+    except Exception as e:
+        logger.warning(f"Failed to calculate expected values: {e}")
+        return {
+            "error": "Unable to calculate - insufficient price data"
+        }, "Insufficient data for strategy recommendation"
 
 
 class MarketCorrelationAnalysis(BaseModel):
@@ -36,6 +223,14 @@ class MarketCorrelationAnalysis(BaseModel):
     risk_level: Literal["low", "medium", "high"] = Field(
         ...,
         description="Risk assessment based on volatility and market conditions"
+    )
+    expected_values: Optional[Dict[str, float]] = Field(
+        None,
+        description="Expected value calculations for all 4 scenarios based on market prices and correlation"
+    )
+    best_strategy: Optional[str] = Field(
+        None,
+        description="Recommended betting strategy based on expected values"
     )
 
 
@@ -74,15 +269,16 @@ async def analyze_market_correlation(
     Raises:
         ValueError: If model is not a supported Gemini model
     """
-    # Validate model
+    # Validate model - throw error if not supported
     VALID_MODELS = [
         "gemini-flash",
-        "gemini-pro", 
+        "gemini-pro",
         "gemini-2.0-flash",
         "gemini-2.0-flash-exp",
         "gemini-2.0-flash-thinking-exp",
         "gemini-1.5-flash",
-        "gemini-1.5-flash-002"
+        "gemini-1.5-flash-002",
+        "gemini-1.5-flash-8b",
     ]
     
     if model not in VALID_MODELS:
@@ -199,6 +395,17 @@ Provide correlation_score, explanation, investment_score, investment_rationale, 
         response_model=MarketCorrelationAnalysis,
         system_message=system_message
     )
+    
+    # Calculate expected values for all 4 scenarios
+    expected_values, best_strategy = _calculate_expected_values(
+        market1, 
+        market2, 
+        analysis.correlation_score
+    )
+    
+    # Add expected value calculations to analysis
+    analysis.expected_values = expected_values
+    analysis.best_strategy = best_strategy
     
     return analysis
 

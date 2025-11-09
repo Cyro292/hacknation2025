@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Optional, Dict
 from datetime import datetime
 from app.schemas.market_schema import Market
 
@@ -14,6 +14,8 @@ class RelatedMarket(BaseModel):
     investment_score: Optional[float] = Field(None, ge=0.0, le=1.0, description="Arbitrage opportunity score (0.0-1.0). Higher = better price differential")
     investment_rationale: Optional[str] = Field(None, description="Arbitrage opportunity explanation focusing on price differentials")
     risk_level: Optional[str] = Field(None, description="Risk level: low, medium, high")
+    expected_values: Optional[Dict[str, float]] = Field(None, description="Expected value calculations for all 4 scenarios")
+    best_strategy: Optional[str] = Field(None, description="Recommended betting strategy based on EV analysis")
 
 class RelationSearchResponse(BaseModel):
     """Response for relation searches"""
@@ -59,6 +61,8 @@ class EnrichedRelatedMarket(BaseModel):
     investment_score: Optional[float] = Field(None, ge=0.0, le=1.0, description="Arbitrage opportunity score (0.0-1.0). Higher = better price differential")
     investment_rationale: Optional[str] = Field(None, description="Arbitrage opportunity explanation focusing on price differentials")
     risk_level: Optional[str] = Field(None, description="Risk level: low, medium, high")
+    expected_values: Optional[Dict[str, float]] = Field(None, description="Expected value calculations for all 4 scenarios")
+    best_strategy: Optional[str] = Field(None, description="Recommended betting strategy based on EV analysis")
 
 class EnrichedRelationResponse(BaseModel):
     """Response for enriched relation searches with full market data"""

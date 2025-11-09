@@ -76,9 +76,11 @@ async def get_related_markets_enriched(
                     ai_explanation=ai_explanation,
                     investment_score=inv_score,
                     investment_rationale=inv_rationale,
-                    risk_level=risk
+                    risk_level=risk,
+                    expected_values=exp_values,
+                    best_strategy=best_strat
                 )
-                for mid, sim, corr, press, market, ai_score, ai_explanation, inv_score, inv_rationale, risk in result["related_markets"]
+                for mid, sim, corr, press, market, ai_score, ai_explanation, inv_score, inv_rationale, risk, exp_values, best_strat in result["related_markets"]
             ],
             count=len(result["related_markets"])
         )
@@ -139,9 +141,11 @@ async def get_related_markets(
                     ai_explanation=ai_explanation,
                     investment_score=inv_score,
                     investment_rationale=inv_rationale,
-                    risk_level=risk
+                    risk_level=risk,
+                    expected_values=exp_values,
+                    best_strategy=best_strat
                 )
-                for mid, sim, corr, press, ai_score, ai_explanation, inv_score, inv_rationale, risk in results
+                for mid, sim, corr, press, ai_score, ai_explanation, inv_score, inv_rationale, risk, exp_values, best_strat in results
             ],
             count=len(results)
         )

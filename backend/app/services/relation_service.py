@@ -36,7 +36,7 @@ class RelationService:
         min_volume: Optional[float] = None,
         include_ai_analysis: bool = False,
         ai_model: str = "gemini-flash"
-    ) -> List[Tuple[int, float, float, float, Optional[float], Optional[str], Optional[float], Optional[str], Optional[str]]]:
+    ) -> List[Tuple[int, float, float, float, Optional[float], Optional[str], Optional[float], Optional[str], Optional[str], Optional[dict], Optional[str]]]:
         """
         Get related markets from stored relations.
         
@@ -50,7 +50,7 @@ class RelationService:
             
         Returns:
             List of (related_market_id, similarity, correlation, pressure, ai_score, ai_explanation, 
-                     investment_score, investment_rationale, risk_level) tuples
+                     investment_score, investment_rationale, risk_level, expected_values, best_strategy) tuples
         """
         try:
             # Query relations where this market is involved
@@ -81,7 +81,7 @@ class RelationService:
             if min_volume is None and not include_ai_analysis:
                 # Sort by pressure (descending) before returning
                 sorted_results = sorted(basic_results[:limit], key=lambda x: -x[3])  # x[3] is pressure
-                return [(mid, sim, corr, press, None, None, None, None, None) for mid, sim, corr, press in sorted_results]
+                return [(mid, sim, corr, press, None, None, None, None, None, None, None) for mid, sim, corr, press in sorted_results]
             
             # Fetch ALL markets in a SINGLE batch request (MUCH FASTER!)
             market_ids_to_fetch = [mid for mid, _, _, _ in basic_results]
@@ -108,7 +108,7 @@ class RelationService:
             if not include_ai_analysis:
                 # Sort by pressure (descending)
                 results.sort(key=lambda x: -x[3])  # x[3] is pressure
-                return [(mid, sim, corr, press, None, None, None, None, None) for mid, sim, corr, press in results]
+                return [(mid, sim, corr, press, None, None, None, None, None, None, None) for mid, sim, corr, press in results]
             
             # AI analysis enabled - process in parallel
             logger.info(f"Performing AI analysis for {len(results)} markets in parallel...")
@@ -116,7 +116,7 @@ class RelationService:
             # Get source market for AI analysis
             source_market = await self.db.get_market_by_id(market_id)
             if not source_market:
-                return [(mid, sim, corr, press, None, None, None, None, None) for mid, sim, corr, press in results]
+                return [(mid, sim, corr, press, None, None, None, None, None, None, None) for mid, sim, corr, press in results]
             
             async def analyze_one(related_id, similarity, correlation, pressure):
                 market = market_cache.get(related_id)
@@ -124,7 +124,7 @@ class RelationService:
                     market = await self.db.get_market_by_id(related_id)
                 
                 if not market:
-                    return (related_id, similarity, correlation, pressure, None, None, None, None, None)
+                    return (related_id, similarity, correlation, pressure, None, None, None, None, None, None, None)
                 
                 try:
                     analysis = await analyze_market_correlation(
@@ -141,11 +141,13 @@ class RelationService:
                         analysis.explanation,
                         analysis.investment_score,
                         analysis.investment_rationale,
-                        analysis.risk_level
+                        analysis.risk_level,
+                        analysis.expected_values,
+                        analysis.best_strategy
                     )
                 except Exception as e:
                     logger.warning(f"Failed AI analysis for market {related_id}: {e}")
-                    return (related_id, similarity, correlation, pressure, None, None, None, None, None)
+                    return (related_id, similarity, correlation, pressure, None, None, None, None, None, None, None)
             
             # Process all in parallel
             analysis_tasks = [analyze_one(mid, sim, corr, press) for mid, sim, corr, press in results]
@@ -194,7 +196,8 @@ class RelationService:
             Dictionary with:
             - source_market: Market object (if include_source=True, else None)
             - related_markets: List of (related_market_id, similarity, correlation, pressure, market_object, 
-                               ai_score, ai_explanation, investment_score, investment_rationale, risk_level) tuples
+                               ai_score, ai_explanation, investment_score, investment_rationale, risk_level,
+                               expected_values, best_strategy) tuples
         """
         try:
             # Get source market if requested
@@ -215,7 +218,7 @@ class RelationService:
             
             # Fetch all market details in a SINGLE batch request (MUCH FASTER!)
             # Extract just the first 4 values (id, sim, corr, press) ignoring AI fields
-            market_ids_to_fetch = [related_id for related_id, _, _, _, _, _, _, _, _ in basic_results]
+            market_ids_to_fetch = [related_id for related_id, _, _, _, _, _, _, _, _, _, _ in basic_results]
             markets = await self.db.batch_get_markets_by_ids(market_ids_to_fetch)
             
             # Build market lookup
@@ -224,7 +227,7 @@ class RelationService:
             # If AI analysis is NOT needed, return quickly (sorted by pressure)
             if not include_ai_analysis:
                 enriched_results = []
-                for related_id, similarity, correlation, pressure, _, _, _, _, _ in basic_results:
+                for related_id, similarity, correlation, pressure, _, _, _, _, _, _, _ in basic_results:
                     market = market_lookup.get(related_id)
                     if market:
                         enriched_results.append((
@@ -237,7 +240,9 @@ class RelationService:
                             None,  # ai_explanation
                             None,  # investment_score
                             None,  # investment_rationale
-                            None   # risk_level
+                            None,  # risk_level
+                            None,  # expected_values
+                            None   # best_strategy
                         ))
                 
                 # Sort by pressure (descending)
@@ -261,6 +266,8 @@ class RelationService:
                 investment_score = None
                 investment_rationale = None
                 risk_level = None
+                expected_values = None
+                best_strategy = None
                 
                 if source_market:
                     try:
@@ -274,6 +281,8 @@ class RelationService:
                         investment_score = analysis.investment_score
                         investment_rationale = analysis.investment_rationale
                         risk_level = analysis.risk_level
+                        expected_values = analysis.expected_values
+                        best_strategy = analysis.best_strategy
                     except Exception as e:
                         logger.warning(f"Failed AI analysis for market {related_id}: {e}")
                 
@@ -287,13 +296,15 @@ class RelationService:
                     ai_explanation,
                     investment_score,
                     investment_rationale,
-                    risk_level
+                    risk_level,
+                    expected_values,
+                    best_strategy
                 )
             
             # Process all AI analyses in parallel (MUCH FASTER!)
             analysis_tasks = [
                 analyze_one_market(related_id, similarity, correlation, pressure)
-                for related_id, similarity, correlation, pressure, _, _, _, _, _ in basic_results
+                for related_id, similarity, correlation, pressure, _, _, _, _, _, _, _ in basic_results
             ]
             
             results_with_ai = await asyncio.gather(*analysis_tasks)
