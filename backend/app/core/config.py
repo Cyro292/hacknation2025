@@ -27,6 +27,7 @@ class Settings:
     BACKEND_CORS_ORIGINS: List[str] = [
         "http://localhost:3000",
         "http://localhost:3001",
+        "https://bet-graph.vercel.app",
     ]
     
     # Database Settings
