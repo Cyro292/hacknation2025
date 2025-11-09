@@ -216,6 +216,11 @@ function MarketDetailView({ marketId }: { marketId: number }) {
     return sorted.find(m => m.expected_values && m.expected_values.total_expected_profit !== undefined) || null;
   }, [relationsData]);
 
+  // Remove ROI from best_strategy text
+  const cleanStrategy = topMarketWithEV?.best_strategy
+    ? topMarketWithEV.best_strategy.replace(/\s*\(ROI\s+[^)]+\)\.?\s*/gi, " ").trim()
+    : null;
+
   return (
     <div
       style={{
@@ -286,7 +291,7 @@ function MarketDetailView({ marketId }: { marketId: number }) {
                 ${topMarketWithEV.expected_values.total_expected_profit.toFixed(2)}
               </div>
             </div>
-            {topMarketWithEV.best_strategy && (
+            {cleanStrategy && (
               <div
                 style={{
                   marginTop: "12px",
@@ -297,7 +302,7 @@ function MarketDetailView({ marketId }: { marketId: number }) {
                   lineHeight: "1.4",
                 }}
               >
-                {topMarketWithEV.best_strategy}
+                {cleanStrategy}
               </div>
             )}
           </div>

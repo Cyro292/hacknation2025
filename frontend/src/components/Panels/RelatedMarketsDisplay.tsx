@@ -131,6 +131,11 @@ function RelatedMarketCard({
       : "medium"
     : null;
 
+  // Remove ROI from best_strategy text
+  const cleanStrategy = best_strategy
+    ? best_strategy.replace(/\s*\(ROI\s+[^)]+\)\.?\s*/gi, " ").trim()
+    : null;
+
   return (
     <div
       role="listitem"
@@ -339,7 +344,7 @@ function RelatedMarketCard({
       )}
 
       {/* AI Suggestion / Best Strategy - At the bottom */}
-      {best_strategy && (
+      {cleanStrategy && (
         <div
           style={{
             marginTop: "12px",
@@ -361,7 +366,7 @@ function RelatedMarketCard({
             <FieldLabel>AI Suggestion</FieldLabel>
           </div>
           <TruncatedText
-            text={best_strategy}
+            text={cleanStrategy}
             maxLength={200}
             style={{
               color: "#4ade80",
@@ -444,6 +449,7 @@ function ExpectedValuesDisplay({
     .filter(([key]) => 
       key !== "best_scenario" && 
       key !== "worst_scenario" &&
+      key !== "expected_roi" && // Skip ROI calculation
       !key.startsWith("_") // Skip internal/metadata keys
     )
     .map(([key, value]) => {
