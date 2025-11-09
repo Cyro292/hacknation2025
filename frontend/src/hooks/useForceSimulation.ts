@@ -11,6 +11,7 @@ import {
   type Simulation,
 } from "d3-force";
 import type { GraphNode, GraphConnection } from "@/types/graph";
+import { getNodeRadius } from "@/lib/d3-helpers";
 
 interface UseForceSimulationProps {
   nodes: GraphNode[];
@@ -91,10 +92,11 @@ export function useForceSimulation({
       // Center force: pulls graph toward viewport center
       .force("center", forceCenter<GraphNode>(width / 2, height / 2))
       // Collision force: prevents node overlap
+      // Uses dynamic radius based on each node's volatility, with padding for spacing
       .force(
         "collide",
         forceCollide<GraphNode>()
-          .radius(12) // Slightly larger than visual node radius for spacing
+          .radius((node) => getNodeRadius(node.volatility) + 3) // Visual radius + 3px padding
           .strength(0.7)
       );
 

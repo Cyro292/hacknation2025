@@ -3,25 +3,26 @@
 
 /**
  * Maps a node's volatility value (0-1) to a corresponding theme color.
- * Uses a 5-level color scale from light blue (calm) to dark blue (volatile).
+ * Uses a 4-tier color scale as specified:
+ * - < 0.3: very light blue (calm)
+ * - 0.3-0.5: light blue
+ * - 0.5-0.7: standard blue
+ * - > 0.7: dark blue (highly volatile)
  *
  * @param volatility - Value between 0 and 1 representing market volatility
  * @returns CSS color string matching the theme's volatility color scale
  */
 export function getNodeColor(volatility: number): string {
-  if (volatility < 0.2) {
-    return "#dbeafe"; // very-low
+  if (volatility < 0.3) {
+    return "#dbeafe"; // very light blue
   }
-  if (volatility < 0.4) {
-    return "#93c5fd"; // low
+  if (volatility < 0.5) {
+    return "#93c5fd"; // light blue
   }
-  if (volatility < 0.6) {
-    return "#3b82f6"; // medium
+  if (volatility < 0.7) {
+    return "#3b82f6"; // standard blue
   }
-  if (volatility < 0.8) {
-    return "#1d4ed8"; // high
-  }
-  return "#1e3a8a"; // very-high
+  return "#1e3a8a"; // dark blue
 }
 
 /**
@@ -46,11 +47,30 @@ export function getConnectionColor(): string {
 }
 
 /**
- * Calculates the radius for a node based on its properties.
- * Currently uses a default radius, but can be extended to vary by data.
+ * Calculates the radius for a node based on its volatility.
+ * Higher volatility nodes are larger for clear visual emphasis.
+ * Linear mapping from volatility to radius for noticeable diversity.
  *
- * @returns Node radius in pixels
+ * @param volatility - Value between 0 and 1 representing market volatility
+ * @returns Node radius in pixels (5-11px range, 6px variation)
  */
-export function getNodeRadius(): number {
-  return 8; // Default radius for all nodes
+export function getNodeRadius(volatility: number): number {
+  const minRadius = 5;
+  const maxRadius = 11;
+  const radiusRange = maxRadius - minRadius;
+
+  // Linear mapping: 0 volatility = 5px, 1 volatility = 11px
+  // This creates clear visual diversity (6px variation is very noticeable)
+  return minRadius + (volatility * radiusRange);
+}
+
+/**
+ * Checks if a node should have pulsing animation based on volatility.
+ * Nodes with volatility > 0.7 will pulse with light green glow.
+ *
+ * @param volatility - Value between 0 and 1 representing market volatility
+ * @returns Boolean indicating if node should pulse
+ */
+export function shouldNodePulse(volatility: number): boolean {
+  return volatility > 0.7;
 }

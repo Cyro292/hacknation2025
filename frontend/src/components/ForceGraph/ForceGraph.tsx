@@ -16,6 +16,7 @@ import {
   getConnectionWidth,
   getConnectionColor,
   getNodeRadius,
+  shouldNodePulse,
 } from "@/lib/d3-helpers";
 
 interface ForceGraphProps {
@@ -204,7 +205,6 @@ export function ForceGraph({ data, onZoomControllerCreated }: ForceGraphProps) {
     console.log("[DEBUG] ✅ Zoom behavior successfully applied");
   }, [dimensions.width, dimensions.height, onZoomControllerCreated]);
 
-  const nodeRadius = getNodeRadius();
   const connectionColor = getConnectionColor();
 
   // Don't render until we have measured dimensions
@@ -285,9 +285,19 @@ export function ForceGraph({ data, onZoomControllerCreated }: ForceGraphProps) {
             }
 
             const fillColor = getNodeColor(node.volatility);
+            const nodeRadius = getNodeRadius(node.volatility);
+            const isPulsing = shouldNodePulse(node.volatility);
+
+            // Debug logging for first 5 nodes to verify radius calculation
+            if (nodeIndex < 5) {
+              console.log(`[DEBUG Node ${node.id}] volatility: ${node.volatility.toFixed(3)}, radius: ${nodeRadius.toFixed(2)}px`);
+            }
 
             return (
-              <g key={`node-${node.id}-${nodeIndex}`} className="node">
+              <g
+                key={`node-${node.id}-${nodeIndex}`}
+                className={`node ${isPulsing ? 'node-high-volatility' : ''}`}
+              >
                 {/* Node circle */}
                 <circle
                   className="node-circle"
