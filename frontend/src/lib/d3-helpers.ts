@@ -22,9 +22,9 @@ export function getNodeColorWithThresholds(
   volatility: number,
   thresholds: VolatilityThresholds
 ): string {
-  // Bottom 40% - very light red
+  // Bottom 40% - white
   if (volatility < thresholds.p40) {
-    return "#fef2f2";
+    return "#ffffff";
   }
 
   // 40th to 60th percentile - very light blue
@@ -56,10 +56,10 @@ export function getNodeColorWithThresholds(
 /**
  * Maps a node's volatility value (0-1) to a corresponding theme color.
  * Uses a 4-tier color scale as specified:
- * - < 0.3: very light red (calm)
- * - 0.3-0.5: light red
- * - 0.5-0.7: standard red
- * - > 0.7: dark red (highly volatile)
+ * - < 0.3: very light blue (calm)
+ * - 0.3-0.5: light blue
+ * - 0.5-0.7: standard blue
+ * - > 0.7: dark blue (highly volatile)
  *
  * @param volatility - Value between 0 and 1 representing market volatility
  * @returns CSS color string matching the theme's volatility color scale
@@ -67,15 +67,15 @@ export function getNodeColorWithThresholds(
  */
 export function getNodeColor(volatility: number): string {
   if (volatility < 0.3) {
-    return "#fecaca"; // very light red (red-200)
+    return "#dbeafe"; // very light blue
   }
   if (volatility < 0.5) {
-    return "#f87171"; // light red (red-400)
+    return "#93c5fd"; // light blue
   }
   if (volatility < 0.7) {
-    return "#dc2626"; // standard red (red-600)
+    return "#3b82f6"; // standard blue
   }
-  return "#991b1b"; // dark red (red-800)
+  return "#153a9f"; // dark blue
 }
 
 /**
