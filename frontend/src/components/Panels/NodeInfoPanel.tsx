@@ -24,7 +24,8 @@ function TruncatedText({
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const shouldTruncate = text.length > maxLength;
-  const displayText = isExpanded || !shouldTruncate ? text : text.slice(0, maxLength);
+  const displayText =
+    isExpanded || !shouldTruncate ? text : text.slice(0, maxLength);
 
   if (!shouldTruncate) {
     return <div style={style}>{text}</div>;
@@ -35,8 +36,7 @@ function TruncatedText({
       <span>
         {displayText}
         {!isExpanded && shouldTruncate && "..."}
-      </span>
-      {" "}
+      </span>{" "}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         style={{
@@ -56,11 +56,13 @@ function TruncatedText({
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.color = "#94a3b8";
-          e.currentTarget.style.textDecorationColor = "rgba(148, 163, 184, 0.6)";
+          e.currentTarget.style.textDecorationColor =
+            "rgba(148, 163, 184, 0.6)";
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.color = "#64748b";
-          e.currentTarget.style.textDecorationColor = "rgba(100, 116, 139, 0.4)";
+          e.currentTarget.style.textDecorationColor =
+            "rgba(100, 116, 139, 0.4)";
         }}
       >
         {isExpanded ? "show less" : "show more"}
@@ -110,7 +112,7 @@ export function NodeInfoPanel({
         left: "24px",
         top: "24px",
         zIndex: 10,
-        width: isCollapsed ? "auto" : "min(320px, calc(100vw - 48px))",
+        width: isCollapsed ? "auto" : "min(370px, calc(100vw - 48px))",
         maxHeight: "calc(100vh - 48px)",
         transition: "width 300ms ease-in-out",
       }}
@@ -185,7 +187,10 @@ export function NodeInfoPanel({
         {!isCollapsed && (
           <>
             {selectedNode ? (
-              <NodeDetailView node={selectedNode} onOpenSidebar={onOpenSidebar} />
+              <NodeDetailView
+                node={selectedNode}
+                onOpenSidebar={onOpenSidebar}
+              />
             ) : (
               <NodeListView
                 nodes={nodes}
@@ -287,7 +292,10 @@ function NodeDetailView({
       {node.outcomes && node.outcomes.length > 0 && (
         <div>
           <FieldLabel>Outcomes</FieldLabel>
-          <OutcomesComparison outcomes={node.outcomes} prices={node.outcomePrices} />
+          <OutcomesComparison
+            outcomes={node.outcomes}
+            prices={node.outcomePrices}
+          />
         </div>
       )}
 
@@ -407,18 +415,7 @@ function NodeListView({
                   textOverflow: "ellipsis",
                 }}
               >
-                {node.id}
-              </div>
-              <div
-                style={{
-                  color: "#94a3b8",
-                  fontSize: "12px",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {node.shortened_name || node.name}
+                {node.shortened_name || node.id}
               </div>
             </div>
 
@@ -492,7 +489,11 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
  * @param ratio - Interpolation ratio between 0 and 1
  * @returns Interpolated color in hex format
  */
-function interpolateColor(color1: string, color2: string, ratio: number): string {
+function interpolateColor(
+  color1: string,
+  color2: string,
+  ratio: number
+): string {
   const hex = (color: string) => {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
     return result
@@ -652,7 +653,13 @@ function VolumeDisplay({ volume }: { volume: number }) {
  * OutcomesComparison renders outcomes with their prices in a side-by-side comparison.
  * Uses gentle red/green colors to indicate different outcomes.
  */
-function OutcomesComparison({ outcomes, prices }: { outcomes: string[]; prices: string[] }) {
+function OutcomesComparison({
+  outcomes,
+  prices,
+}: {
+  outcomes: string[];
+  prices: string[];
+}) {
   return (
     <div
       style={{

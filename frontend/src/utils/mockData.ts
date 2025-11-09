@@ -311,7 +311,7 @@ const TRADE_TEMPLATES = {
  */
 function createNode(index: number, random: () => number): GraphNode {
   const instrumentId = ALL_INSTRUMENTS[index % ALL_INSTRUMENTS.length];
-  const name = INSTRUMENT_NAMES[instrumentId] || instrumentId;
+  const fullInstrumentName = INSTRUMENT_NAMES[instrumentId] || instrumentId;
 
   // Distribute groups evenly across 0-9
   const group = String(index % 10);
@@ -344,7 +344,9 @@ function createNode(index: number, random: () => number): GraphNode {
 
   return {
     id: instrumentId,
-    name,
+    name: instrumentId, // Short display name (same as shortened_name)
+    shortened_name: instrumentId, // Short name for list view and graph nodes
+    fullName: fullInstrumentName, // Full descriptive name for detail view
     group,
     volatility,
     lastUpdate,
