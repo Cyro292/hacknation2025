@@ -11,6 +11,11 @@ from app.schemas.relation_schema import (
     MarketRelationBatchCreate,
     EnrichedRelatedMarket,
     EnrichedRelationResponse,
+    BatchRelationRequest,
+    BatchRelationResponse,
+    GraphNode,
+    GraphConnection,
+    GraphResponse,
 )
 from app.services.relation_service import get_relation_service
 
@@ -330,6 +335,134 @@ async def get_relation_statistics(market_id: int):
                 if low_similarity else 0.0
             )
         }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/batch/query", response_model=BatchRelationResponse)
+async def get_relations_batch(
+    request: BatchRelationRequest,
+    min_similarity: Optional[float] = Query(None, ge=0.0, le=1.0, description="Optional minimum similarity threshold")
+):
+    """
+    Efficiently retrieve all market relations where any of the given polymarket IDs are involved.
+    
+    This endpoint is optimized for batch queries:
+    - Converts all polymarket IDs to database IDs in a single query
+    - Finds all relations where any market is involved (market_id_1 OR market_id_2)
+    - Returns raw relations without fetching full market details for maximum performance
+    
+    Example request:
+    ```json
+    {
+        "polymarket_ids": ["637016", "637005", "667081"]
+    }
+    ```
+    
+    Args:
+        request: Batch request containing list of polymarket IDs (max 100)
+        min_similarity: Optional minimum similarity threshold to filter results
+    
+    Returns:
+        All relations involving the specified markets, with metadata about found/not found markets
+    """
+    try:
+        service = get_relation_service()
+        
+        relations, not_found, found_count = await service.get_relations_by_polymarket_ids(
+            polymarket_ids=request.polymarket_ids,
+            min_similarity=min_similarity
+        )
+        
+        return BatchRelationResponse(
+            relations=relations,
+            total_relations=len(relations),
+            markets_found=found_count,
+            markets_not_found=not_found
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/graph", response_model=GraphResponse)
+async def get_graph_visualization(
+    limit: int = Query(100, ge=1, le=500, description="Maximum number of markets to include"),
+    min_similarity: float = Query(0.7, ge=0.0, le=1.0, description="Minimum similarity for connections"),
+    is_active: Optional[bool] = Query(True, description="Filter by active markets")
+):
+    """
+    Get market graph data for visualization (nodes + connections).
+    
+    Returns markets as nodes and their relations as connections in a format
+    optimized for graph visualization libraries like D3.js, vis.js, etc.
+    
+    Example: `/relations/graph?limit=100&min_similarity=0.7&is_active=true`
+    
+    Response format:
+    - **nodes**: Array of markets with id, name, group (from tags), volatility, volume
+    - **connections**: Array of relations with source, target, correlation, pressure, similarity
+    
+    Args:
+        limit: Maximum number of markets to include (default: 100, max: 500)
+        min_similarity: Minimum similarity threshold for connections (default: 0.7)
+        is_active: Include only active markets (default: true)
+    
+    Returns:
+        Graph data ready for visualization with nodes and connections
+    """
+    try:
+        service = get_relation_service()
+        
+        # Get markets and relations
+        data = await service.get_graph_data(
+            limit=limit,
+            min_similarity=min_similarity,
+            is_active=is_active
+        )
+        
+        markets = data['markets']
+        relations = data['relations']
+        
+        # Create market ID to polymarket ID mapping
+        id_to_polymarket = {m.id: m.polymarket_id for m in markets}
+        
+        # Build nodes
+        nodes = []
+        for market in markets:
+            # Use first tag as group, or "ungrouped" if no tags
+            group = market.tags[0] if market.tags else "ungrouped"
+            
+            nodes.append(GraphNode(
+                id=market.polymarket_id,
+                name=market.question,
+                group=group,
+                volatility=market.volatility_24h,
+                volume=market.volume,
+                lastUpdate=market.updated_at,
+                market_id=market.id
+            ))
+        
+        # Build connections
+        connections = []
+        for relation in relations:
+            # Only include connections where both markets are in our node set
+            if relation.market_id_1 in id_to_polymarket and relation.market_id_2 in id_to_polymarket:
+                connections.append(GraphConnection(
+                    source=id_to_polymarket[relation.market_id_1],
+                    target=id_to_polymarket[relation.market_id_2],
+                    correlation=relation.correlation,
+                    pressure=relation.pressure,
+                    similarity=relation.similarity
+                ))
+        
+        return GraphResponse(
+            nodes=nodes,
+            connections=connections,
+            total_nodes=len(nodes),
+            total_connections=len(connections)
+        )
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

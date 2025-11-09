@@ -818,6 +818,138 @@ class RelationService:
             }
 
 
+    async def get_graph_data(
+        self,
+        limit: int = 100,
+        min_similarity: float = 0.7,
+        is_active: Optional[bool] = True
+    ) -> dict:
+        """
+        Get market graph data for visualization (nodes + connections).
+        
+        Args:
+            limit: Maximum number of markets to include
+            min_similarity: Minimum similarity for connections
+            is_active: Filter by active status
+            
+        Returns:
+            Dictionary with 'markets' and 'relations' lists
+        """
+        try:
+            # Step 1: Get markets
+            markets = await self.db.get_markets(
+                limit=limit,
+                is_active=is_active,
+                order_by='volume',
+                ascending=False
+            )
+            
+            if not markets:
+                return {'markets': [], 'relations': []}
+            
+            # Get all market IDs
+            market_ids = [m.id for m in markets]
+            
+            # Step 2: Get all relations involving these markets (efficiently)
+            # Query relations where any of these IDs are involved
+            query1 = self.db.client.table('market_relations').select('*').in_('market_id_1', market_ids)
+            query2 = self.db.client.table('market_relations').select('*').in_('market_id_2', market_ids)
+            
+            # Apply similarity filter
+            if min_similarity is not None:
+                query1 = query1.gte('similarity', min_similarity)
+                query2 = query2.gte('similarity', min_similarity)
+            
+            # Execute queries
+            response1 = query1.execute()
+            response2 = query2.execute()
+            
+            # Combine and deduplicate relations
+            seen_ids = set()
+            relations = []
+            market_id_set = set(market_ids)
+            
+            for relation_data in response1.data + response2.data:
+                relation_id = relation_data['id']
+                # Only include if both markets are in our set (for visualization)
+                if (relation_data['market_id_1'] in market_id_set and 
+                    relation_data['market_id_2'] in market_id_set and 
+                    relation_id not in seen_ids):
+                    seen_ids.add(relation_id)
+                    relations.append(MarketRelation(**relation_data))
+            
+            return {
+                'markets': markets,
+                'relations': relations
+            }
+            
+        except Exception as e:
+            logger.error(f"Error getting graph data: {e}")
+            raise
+    
+    async def get_relations_by_polymarket_ids(
+        self,
+        polymarket_ids: List[str],
+        min_similarity: Optional[float] = None
+    ) -> Tuple[List[MarketRelation], List[str], int]:
+        """
+        Efficiently retrieve all market relations where any of the given polymarket IDs are involved.
+        
+        Args:
+            polymarket_ids: List of polymarket IDs to find relations for
+            min_similarity: Optional minimum similarity threshold
+            
+        Returns:
+            Tuple of (relations, markets_not_found, markets_found_count)
+        """
+        try:
+            # Step 1: Batch convert polymarket_ids to database IDs
+            response = self.db.client.table('markets').select('id, polymarket_id').in_(
+                'polymarket_id', polymarket_ids
+            ).execute()
+            
+            if not response.data:
+                return ([], polymarket_ids, 0)
+            
+            # Create mappings
+            market_ids = [row['id'] for row in response.data]
+            found_polymarket_ids = {row['polymarket_id'] for row in response.data}
+            markets_not_found = [pm_id for pm_id in polymarket_ids if pm_id not in found_polymarket_ids]
+            
+            # Step 2: Query market_relations where any of these IDs are involved
+            # Use two separate queries with IN clauses for better performance
+            query1 = self.db.client.table('market_relations').select('*').in_('market_id_1', market_ids)
+            query2 = self.db.client.table('market_relations').select('*').in_('market_id_2', market_ids)
+            
+            # Apply similarity filter if provided
+            if min_similarity is not None:
+                query1 = query1.gte('similarity', min_similarity)
+                query2 = query2.gte('similarity', min_similarity)
+            
+            # Execute both queries
+            response1 = query1.execute()
+            response2 = query2.execute()
+            
+            # Combine results and remove duplicates (a relation might appear in both)
+            seen_ids = set()
+            relations = []
+            
+            for relation_data in response1.data + response2.data:
+                relation_id = relation_data['id']
+                if relation_id not in seen_ids:
+                    seen_ids.add(relation_id)
+                    relations.append(MarketRelation(**relation_data))
+            
+            # Sort by similarity descending
+            relations.sort(key=lambda r: r.similarity, reverse=True)
+            
+            return (relations, markets_not_found, len(market_ids))
+            
+        except Exception as e:
+            logger.error(f"Error retrieving batch relations: {e}")
+            raise
+
+
 _relation_service: Optional[RelationService] = None
 
 
