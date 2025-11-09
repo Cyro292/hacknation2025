@@ -42,15 +42,23 @@ export async function getRelatedMarkets(
  * Get related markets with full market details (enriched version)
  * @param marketId - Source market ID
  * @param params - Query parameters for filtering
+ * @param timeout - Optional timeout in milliseconds (default: 30s, 120s for AI analysis)
  * @returns Promise resolving to enriched relation response
  */
 export async function getEnrichedRelatedMarkets(
   marketId: number,
-  params?: GetEnrichedRelationsParams
+  params?: GetEnrichedRelationsParams,
+  timeout?: number
 ): Promise<EnrichedRelationResponse> {
+  // Use longer timeout for AI analysis requests (120 seconds)
+  const requestTimeout = timeout ?? (params?.ai_analysis ? 120000 : 30000);
+  
   const response = await apiClient.get<EnrichedRelationResponse>(
     `/api/relations/${marketId}/enriched`,
-    { params: params ? { ...params } : undefined }
+    { 
+      params: params ? { ...params } : undefined,
+      timeout: requestTimeout,
+    }
   );
 
   // Validate response structure
@@ -200,11 +208,13 @@ export async function getAllRelationsForMarkets(
  * Helper function to fetch enriched relations for multiple markets
  * @param marketIds - Array of market IDs
  * @param params - Query parameters for each relation fetch
+ * @param timeout - Optional timeout in milliseconds (default: 30s, 120s for AI analysis)
  * @returns Promise resolving to map of market ID to enriched relations
  */
 export async function getAllEnrichedRelationsForMarkets(
   marketIds: number[],
-  params?: GetEnrichedRelationsParams
+  params?: GetEnrichedRelationsParams,
+  timeout?: number
 ): Promise<Map<number, EnrichedRelationResponse>> {
   const relationsMap = new Map<number, EnrichedRelationResponse>();
 
@@ -213,7 +223,7 @@ export async function getAllEnrichedRelationsForMarkets(
   for (let i = 0; i < marketIds.length; i += BATCH_SIZE) {
     const batch = marketIds.slice(i, i + BATCH_SIZE);
     const promises = batch.map(marketId =>
-      getEnrichedRelatedMarkets(marketId, params)
+      getEnrichedRelatedMarkets(marketId, params, timeout)
         .then(response => ({ marketId, response }))
         .catch(error => {
           console.warn(`Failed to fetch enriched relations for market ${marketId}:`, error);

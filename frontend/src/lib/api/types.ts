@@ -50,6 +50,11 @@ export interface RelatedMarket {
   pressure?: number;
   ai_correlation_score?: number | null;
   ai_explanation?: string | null;
+  investment_score?: number | null;
+  investment_rationale?: string | null;
+  risk_level?: string | null;
+  expected_values?: Record<string, any> | null;
+  best_strategy?: string | null;
 }
 
 /**
@@ -137,9 +142,10 @@ export interface GetRelationsParams {
 
 /**
  * Parameters for GET /api/relations/{market_id}/enriched
- * Same as GetRelationsParams
  */
-export type GetEnrichedRelationsParams = GetRelationsParams;
+export interface GetEnrichedRelationsParams extends GetRelationsParams {
+  ai_model?: string; // AI model: 'gemini-flash' (fast) or 'gemini-pro' (quality), default 'gemini-flash'
+}
 
 /**
  * Graph node from /api/relations/graph endpoint

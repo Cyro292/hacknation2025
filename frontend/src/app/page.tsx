@@ -9,7 +9,9 @@ import { ZoomControls } from "@/components/Controls/ZoomControls";
 import { SearchBar } from "@/components/Controls/SearchBar";
 import { NodeInfoPanel } from "@/components/Panels/NodeInfoPanel";
 import { HotTradesPanel } from "@/components/Panels/HotTradesPanel";
+import { MarketPanel } from "@/components/Panels/MarketPanel";
 import { useGraphData } from "@/hooks/useGraphData";
+import { useMarketPanelState } from "@/hooks/useMarketPanelState";
 import { isGraphData } from "@/types/graph";
 import type { ZoomController } from "@/hooks/useZoom";
 import type { ClusterController } from "@/types/graph";
@@ -30,6 +32,7 @@ function deduplicateNodes(nodes: GraphNode[]): GraphNode[] {
 export default function Home() {
   const [zoomController, setZoomController] = useState<ZoomController | null>(null);
   const [clusterController, setClusterController] = useState<ClusterController | null>(null);
+  const marketPanel = useMarketPanelState();
 
   // Fetch graph data from API or use mock data based on configuration
   const { data: graphData, loading, error, retry, refetch, isStale } = useGraphData({
@@ -136,6 +139,7 @@ export default function Home() {
             nodes={uniqueNodes}
             selectedNode={selectedNode}
             onNodeSelect={(nodeId) => clusterController.selectNode(nodeId)}
+            onOpenSidebar={(marketId: number) => marketPanel.openPanel(marketId)}
           />
           <SearchBar
             nodes={uniqueNodes}
@@ -145,6 +149,12 @@ export default function Home() {
           <HotTradesPanel />
         </>
       )}
+      
+      {/* Market Panel */}
+      <MarketPanel
+        marketId={marketPanel.openMarketId}
+        onClose={marketPanel.closePanel}
+      />
       {zoomController && (
         <ZoomControls
           onZoomIn={() => zoomController.zoomIn()}

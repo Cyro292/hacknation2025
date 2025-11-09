@@ -9,6 +9,66 @@ import { getNodeColor } from "@/lib/d3-helpers";
 import { formatTimestamp } from "@/lib/utils";
 import { usePanelState } from "@/hooks/usePanelState";
 
+/**
+ * TruncatedText component displays text with truncation and expand/collapse functionality.
+ * Shows first maxLength characters with a "more" button if text is longer.
+ */
+function TruncatedText({
+  text,
+  maxLength = 500,
+  style,
+}: {
+  text: string;
+  maxLength?: number;
+  style?: React.CSSProperties;
+}) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const shouldTruncate = text.length > maxLength;
+  const displayText = isExpanded || !shouldTruncate ? text : text.slice(0, maxLength);
+
+  if (!shouldTruncate) {
+    return <div style={style}>{text}</div>;
+  }
+
+  return (
+    <div style={style}>
+      <span>
+        {displayText}
+        {!isExpanded && shouldTruncate && "..."}
+      </span>
+      {" "}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        style={{
+          display: "inline",
+          padding: 0,
+          margin: 0,
+          marginLeft: "4px",
+          backgroundColor: "transparent",
+          border: "none",
+          color: "#64748b",
+          cursor: "pointer",
+          fontSize: "inherit",
+          fontWeight: "400",
+          textDecoration: "underline",
+          textDecorationColor: "rgba(100, 116, 139, 0.4)",
+          transition: "all 150ms ease-in-out",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.color = "#94a3b8";
+          e.currentTarget.style.textDecorationColor = "rgba(148, 163, 184, 0.6)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.color = "#64748b";
+          e.currentTarget.style.textDecorationColor = "rgba(100, 116, 139, 0.4)";
+        }}
+      >
+        {isExpanded ? "show less" : "show more"}
+      </button>
+    </div>
+  );
+}
+
 interface NodeInfoPanelProps {
   /** All nodes in the graph for list view */
   nodes: GraphNode[];
@@ -18,6 +78,9 @@ interface NodeInfoPanelProps {
 
   /** Callback when user clicks a node in list view */
   onNodeSelect: (nodeId: string) => void;
+
+  /** Callback to open the market panel for a specific market_id */
+  onOpenSidebar?: (marketId: number) => void;
 }
 
 /**
@@ -35,6 +98,7 @@ export function NodeInfoPanel({
   nodes,
   selectedNode,
   onNodeSelect,
+  onOpenSidebar,
 }: NodeInfoPanelProps) {
   const { isCollapsed, toggleCollapse } = usePanelState("node-info", true);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
@@ -121,7 +185,7 @@ export function NodeInfoPanel({
         {!isCollapsed && (
           <>
             {selectedNode ? (
-              <NodeDetailView node={selectedNode} />
+              <NodeDetailView node={selectedNode} onOpenSidebar={onOpenSidebar} />
             ) : (
               <NodeListView
                 nodes={nodes}
@@ -141,7 +205,19 @@ export function NodeInfoPanel({
  * NodeDetailView displays detailed information about a selected node.
  * Shows name, description, volume, outcomes, tags, volatility, and last update.
  */
-function NodeDetailView({ node }: { node: GraphNode }) {
+function NodeDetailView({
+  node,
+  onOpenSidebar,
+}: {
+  node: GraphNode;
+  onOpenSidebar?: (marketId: number) => void;
+}) {
+  const handleOpenSidebar = () => {
+    if (node.marketId && onOpenSidebar) {
+      onOpenSidebar(node.marketId);
+    }
+  };
+
   return (
     <div
       style={{
@@ -153,12 +229,52 @@ function NodeDetailView({ node }: { node: GraphNode }) {
         paddingRight: "4px",
       }}
     >
+      {/* Open Market Panel Button - only show if marketId exists */}
+      {node.marketId && onOpenSidebar && (
+        <button
+          onClick={handleOpenSidebar}
+          style={{
+            backgroundColor: "rgba(59, 130, 246, 0.15)",
+            border: "1px solid rgba(59, 130, 246, 0.3)",
+            borderRadius: "8px",
+            color: "#60a5fa",
+            cursor: "pointer",
+            padding: "10px 16px",
+            fontSize: "14px",
+            fontWeight: "500",
+            transition: "all 150ms ease-in-out",
+            width: "100%",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "rgba(59, 130, 246, 0.25)";
+            e.currentTarget.style.borderColor = "rgba(59, 130, 246, 0.5)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "rgba(59, 130, 246, 0.15)";
+            e.currentTarget.style.borderColor = "rgba(59, 130, 246, 0.3)";
+          }}
+        >
+          Advanced Generative AI Analysis →
+        </button>
+      )}
       {/* Name field - show full name in detail view */}
       <FieldDisplay label="Name" value={node.fullName || node.name} />
 
       {/* Description field - only show if available */}
       {node.description && (
-        <FieldDisplay label="Description" value={node.description} />
+        <div>
+          <FieldLabel>Description</FieldLabel>
+          <TruncatedText
+            text={node.description}
+            maxLength={200}
+            style={{
+              color: "#f1f5f9",
+              fontSize: "14px",
+              wordBreak: "break-word",
+              marginTop: "4px",
+            }}
+          />
+        </div>
       )}
 
       {/* Volume field */}
