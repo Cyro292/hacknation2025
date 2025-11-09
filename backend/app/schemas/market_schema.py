@@ -42,6 +42,13 @@ class Market(MarketBase):
     created_at: datetime = Field(..., description="When the market was first added")
     updated_at: datetime = Field(..., description="When the market was last updated")
     last_scraped_at: Optional[datetime] = Field(None, description="When the market was last scraped")
+    
+    # Volatility fields from market_volatility table (via join)
+    real_volatility_24h: Optional[float] = Field(None, description="Real volatility score calculated from price changes")
+    proxy_volatility_24h: Optional[float] = Field(None, description="Proxy volatility score based on market characteristics")
+    volatility_calculation_method: Optional[str] = Field(None, description="Method used to calculate volatility")
+    volatility_data_points: Optional[int] = Field(None, description="Number of data points used in volatility calculation")
+    volatility_calculated_at: Optional[datetime] = Field(None, description="When the volatility was last calculated")
 
     class Config:
         from_attributes = True
