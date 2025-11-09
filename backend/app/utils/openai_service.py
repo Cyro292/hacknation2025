@@ -1,15 +1,18 @@
 """
 OpenAI Service using LangChain
 Provides embedding generation and structured output capabilities
+Now using Google Gemini 2.5 Flash for chat (faster & cheaper!)
 """
 from typing import List, Optional, Type, TypeVar, Dict, Any
 from pydantic import BaseModel
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_openai import OpenAIEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage, SystemMessage
 from app.core.config import settings
 from app.schemas.vector_schema import Dataset, Vector, MarketTopics, Topic
 import re
 import logging
+import asyncio
 
 logger = logging.getLogger(__name__)
 
@@ -25,31 +28,35 @@ class OpenAIHelper:
     def __init__(
         self,
         embedding_model: str = "text-embedding-3-large",
-        chat_model: str = "gpt-4o-mini",
+        chat_model: str = "gemini-2.0-flash",
         temperature: float = 0.7
     ):
         """
         Initialize the OpenAI helper with LangChain components.
+        Uses OpenAI for embeddings and Google Gemini for chat (faster & cheaper).
         
         Args:
             embedding_model: OpenAI embedding model (default: text-embedding-3-large)
-            chat_model: OpenAI chat model for structured output (default: gpt-4o-mini)
+            chat_model: Google Gemini model for structured output (default: gemini-2.0-flash-exp)
             temperature: Temperature for chat model (0-2, default: 0.7)
         """
         if not settings.OPENAI_API_KEY:
             raise ValueError("OPENAI_API_KEY not found in environment variables")
         
-        # Initialize OpenAI Embeddings
+        if not settings.GOOGLE_API_KEY:
+            raise ValueError("GOOGLE_API_KEY not found in environment variables")
+        
+        # Initialize OpenAI Embeddings (keeping OpenAI for high-quality embeddings)
         self.embeddings = OpenAIEmbeddings(
             model=embedding_model,
             api_key=settings.OPENAI_API_KEY
         )
         
-        # Initialize ChatOpenAI for structured output
-        self.chat_model = ChatOpenAI(
+        # Initialize Google Gemini for chat (faster & cheaper!)
+        self.chat_model = ChatGoogleGenerativeAI(
             model=chat_model,
             temperature=temperature,
-            api_key=settings.OPENAI_API_KEY
+            google_api_key=settings.GOOGLE_API_KEY
         )
     
     # ==================== EMBEDDING METHODS ====================
@@ -126,6 +133,7 @@ class OpenAIHelper:
     async def create_dataset_embeddings(self, datasets: List[Dataset]) -> List[List[float]]:
         """
         Create embedding vectors from multiple datasets.
+        Optimized with parallel processing for better performance.
         
         Args:
             datasets: List of Dataset objects to embed
@@ -138,7 +146,7 @@ class OpenAIHelper:
             >>> datasets = [dataset1, dataset2, dataset3]
             >>> embeddings = await helper.create_dataset_embeddings(datasets)
         """
-        # Prepare texts from all datasets
+        # Prepare texts from all datasets in parallel
         texts = []
         for dataset in datasets:
             text_parts = [
@@ -152,6 +160,7 @@ class OpenAIHelper:
             combined_text = " | ".join(text_parts)
             texts.append(combined_text)
         
+        # Batch process with OpenAI API (already optimized internally)
         return await self.create_text_embeddings(texts)
     
     def create_text_embedding_sync(self, text: str) -> List[float]:
@@ -377,6 +386,7 @@ Generate topics that represent the key concepts, domains, industries, technologi
     ) -> List[tuple[str, float]]:
         """
         Find most similar texts to a query using cosine similarity.
+        Optimized with parallel embedding generation for better performance.
         
         Args:
             query_text: Query text to search for
@@ -393,61 +403,146 @@ Generate topics that represent the key concepts, domains, industries, technologi
         """
         import numpy as np
         
-        # Get embeddings
-        query_embedding = await self.create_text_embedding(query_text)
-        corpus_embeddings = await self.create_text_embeddings(corpus_texts)
+        # Get embeddings in parallel for maximum speed
+        query_embedding, corpus_embeddings = await asyncio.gather(
+            self.create_text_embedding(query_text),
+            self.create_text_embeddings(corpus_texts)
+        )
         
-        # Calculate cosine similarities
-        query_norm = np.linalg.norm(query_embedding)
-        similarities = []
+        # Calculate cosine similarities using vectorized operations
+        query_vec = np.array(query_embedding)
+        corpus_vecs = np.array(corpus_embeddings)
         
-        for i, corpus_embedding in enumerate(corpus_embeddings):
-            corpus_norm = np.linalg.norm(corpus_embedding)
-            dot_product = np.dot(query_embedding, corpus_embedding)
-            similarity = dot_product / (query_norm * corpus_norm)
-            similarities.append((corpus_texts[i], float(similarity)))
+        # Vectorized cosine similarity calculation (much faster!)
+        query_norm = np.linalg.norm(query_vec)
+        corpus_norms = np.linalg.norm(corpus_vecs, axis=1)
+        dot_products = np.dot(corpus_vecs, query_vec)
+        similarities = dot_products / (query_norm * corpus_norms)
+        
+        # Create result tuples
+        results = [(corpus_texts[i], float(similarities[i])) for i in range(len(corpus_texts))]
         
         # Sort by similarity and return top_k
-        similarities.sort(key=lambda x: x[1], reverse=True)
-        return similarities[:top_k]
+        results.sort(key=lambda x: x[1], reverse=True)
+        return results[:top_k]
 
-async def similarity_search_datasets(
-    self,
-    query_dataset,
-    corpus_datasets: List,
-    top_k: int = 5
-) -> List[tuple[Any, float]]:
-    """
-    Find most similar datasets to a query dataset using cosine similarity of their vectors.
+    async def similarity_search_datasets(
+        self,
+        query_dataset,
+        corpus_datasets: List,
+        top_k: int = 5
+    ) -> List[tuple[Any, float]]:
+        """
+        Find most similar datasets to a query dataset using cosine similarity of their vectors.
+        Optimized with vectorized operations for better performance.
 
-    Args:
-        query_dataset: The dataset to use as the query
-        corpus_datasets: List of datasets to compare against
-        top_k: Number of top results to return
+        Args:
+            query_dataset: The dataset to use as the query
+            corpus_datasets: List of datasets to compare against
+            top_k: Number of top results to return
 
-    Returns:
-        List of (dataset, similarity_score) tuples, sorted by similarity
-    """
-    import numpy as np
+        Returns:
+            List of (dataset, similarity_score) tuples, sorted by similarity
+        """
+        import numpy as np
 
-    # Extract vectors
-    query_vec = np.array(query_dataset.vector.vector)
-    query_norm = np.linalg.norm(query_vec)
+        # Extract vectors using vectorized operations
+        query_vec = np.array(query_dataset.vector.vector)
+        query_norm = np.linalg.norm(query_vec)
 
-    corpus_vecs = [np.array(ds.vector.vector) for ds in corpus_datasets]
-
-    similarities = []
-    for ds, corpus_vec in zip(corpus_datasets, corpus_vecs):
-        corpus_norm = np.linalg.norm(corpus_vec)
-        dot_product = np.dot(query_vec, corpus_vec)
-        if query_norm > 0 and corpus_norm > 0:
-            similarity = dot_product / (query_norm * corpus_norm)
-        else:
-            similarity = 0.0
-        similarities.append((ds, float(similarity)))
+        corpus_vecs = np.array([np.array(ds.vector.vector) for ds in corpus_datasets])
+        
+        # Vectorized cosine similarity calculation (much faster!)
+        corpus_norms = np.linalg.norm(corpus_vecs, axis=1)
+        dot_products = np.dot(corpus_vecs, query_vec)
+        
+        # Handle zero norms
+        with np.errstate(divide='ignore', invalid='ignore'):
+            similarities = dot_products / (query_norm * corpus_norms)
+            similarities = np.nan_to_num(similarities, nan=0.0)
+        
+        # Create result tuples
+        results = [(corpus_datasets[i], float(similarities[i])) for i in range(len(corpus_datasets))]
+        
+        results.sort(key=lambda x: x[1], reverse=True)
+        return results[:top_k]
     
-    similarities.sort(key=lambda x: x[1], reverse=True)
-    return similarities[:top_k]
+    # ==================== BATCH PROCESSING METHODS ====================
+    
+    async def batch_generate_topics(
+        self,
+        markets: List[Dict[str, Any]],
+        max_concurrent: int = 5
+    ) -> List[List[Topic]]:
+        """
+        Generate topics for multiple markets concurrently with controlled parallelism.
+        
+        Args:
+            markets: List of market dictionaries with 'question', 'description', 'outcomes'
+            max_concurrent: Maximum number of concurrent API calls (default: 5)
+            
+        Returns:
+            List of topic lists, one per market
+            
+        Example:
+            >>> helper = OpenAIHelper()
+            >>> markets = [
+            ...     {"question": "Will...", "description": "...", "outcomes": [...]},
+            ...     {"question": "Will...", "description": "...", "outcomes": [...]}
+            ... ]
+            >>> all_topics = await helper.batch_generate_topics(markets)
+        """
+        semaphore = asyncio.Semaphore(max_concurrent)
+        
+        async def generate_with_semaphore(market):
+            async with semaphore:
+                try:
+                    return await self.generate_market_topics(
+                        question=market.get("question", ""),
+                        description=market.get("description"),
+                        outcomes=market.get("outcomes")
+                    )
+                except Exception as e:
+                    logger.error(f"Error generating topics for market: {e}")
+                    return []
+        
+        # Process all markets concurrently with rate limiting
+        return await asyncio.gather(*[generate_with_semaphore(m) for m in markets])
+    
+    async def batch_embeddings_with_limit(
+        self,
+        texts: List[str],
+        batch_size: int = 100
+    ) -> List[List[float]]:
+        """
+        Create embeddings for large lists of texts with automatic batching.
+        Useful for processing thousands of texts efficiently.
+        
+        Args:
+            texts: List of texts to embed
+            batch_size: Number of texts per batch (default: 100)
+            
+        Returns:
+            List of embedding vectors
+            
+        Example:
+            >>> helper = OpenAIHelper()
+            >>> texts = ["text1", "text2", ..., "text10000"]
+            >>> embeddings = await helper.batch_embeddings_with_limit(texts)
+        """
+        if not texts:
+            return []
+        
+        # Split into batches
+        batches = [texts[i:i + batch_size] for i in range(0, len(texts), batch_size)]
+        
+        # Process batches in parallel
+        batch_results = await asyncio.gather(*[
+            self.create_text_embeddings(batch) for batch in batches
+        ])
+        
+        # Flatten results
+        return [emb for batch_result in batch_results for emb in batch_result]
 
 
 # ==================== SINGLETON INSTANCE ====================

@@ -78,6 +78,46 @@ class DatabaseService:
             logger.error(f"Error retrieving market {market_id}: {e}")
             raise
     
+    async def batch_get_markets_by_ids(self, market_ids: List[int], max_retries: int = 3) -> List[Market]:
+        """
+        Retrieve multiple markets by their database IDs in a single query.
+        Much faster than calling get_market_by_id() repeatedly!
+        Includes automatic retry logic for transient failures (like 521 errors).
+        
+        Args:
+            market_ids: List of database IDs
+            max_retries: Maximum number of retry attempts (default: 3)
+            
+        Returns:
+            List of Market objects (only those found)
+            
+        Example:
+            >>> markets = await db.batch_get_markets_by_ids([1, 2, 3, 4, 5])
+        """
+        import asyncio
+        
+        if not market_ids:
+            return []
+        
+        for attempt in range(max_retries):
+            try:
+                # Supabase 'in' filter for batch retrieval
+                response = self.client.table('markets').select('*').in_('id', market_ids).execute()
+                
+                return [Market(**market) for market in response.data]
+                
+            except Exception as e:
+                error_msg = str(e)
+                is_server_error = '521' in error_msg or '502' in error_msg or '503' in error_msg or '504' in error_msg
+                
+                if attempt < max_retries - 1 and is_server_error:
+                    wait_time = (attempt + 1) * 2  # Exponential backoff: 2s, 4s, 6s
+                    logger.warning(f"⚠️  Supabase error (attempt {attempt + 1}/{max_retries}), retrying in {wait_time}s...")
+                    await asyncio.sleep(wait_time)
+                else:
+                    logger.error(f"Error batch retrieving markets: {e}")
+                    raise
+    
     async def get_market_by_polymarket_id(self, polymarket_id: str) -> Optional[Market]:
         """
         Retrieve a market by its Polymarket ID.
@@ -378,6 +418,25 @@ class DatabaseService:
             logger.error(f"Error getting embeddings: {e}")
             raise
     
+    async def get_all_embedding_market_ids(self, limit: int = 100000) -> List[int]:
+        """
+        Get only the market IDs of stored embeddings (much faster than fetching full embeddings).
+        Use this to check which markets already have embeddings without downloading the vectors.
+        
+        Args:
+            limit: Maximum number of IDs to fetch (default: 100000)
+            
+        Returns:
+            List of market IDs that have embeddings
+        """
+        try:
+            # Only select market_id column - MUCH faster!
+            response = self.client.table('vector_embeddings').select('market_id').limit(limit).execute()
+            return [item['market_id'] for item in response.data]
+        except Exception as e:
+            logger.error(f"Error getting embedding market IDs: {e}")
+            raise
+    
     async def delete_embedding(self, market_id: int) -> bool:
         """Delete embedding for a market."""
         try:
@@ -385,6 +444,103 @@ class DatabaseService:
             return len(response.data) > 0
         except Exception as e:
             logger.error(f"Error deleting embedding: {e}")
+            raise
+    
+    async def batch_store_embeddings(
+        self,
+        embeddings_data: List[Dict[str, Any]],
+        batch_size: int = 50,
+        max_retries: int = 3
+    ) -> Dict[str, int]:
+        """
+        Batch store multiple embeddings at once for better performance.
+        Includes automatic retry logic for transient failures.
+        
+        Args:
+            embeddings_data: List of dicts with 'market_id', 'embedding', and optional 'topics'
+            batch_size: Number of embeddings to store per batch (default: 50)
+            max_retries: Maximum number of retry attempts per batch (default: 3)
+            
+        Returns:
+            Dictionary with counts of successful and failed operations
+            
+        Example:
+            >>> embeddings_data = [
+            ...     {'market_id': 1, 'embedding': [...], 'topics': [...]},
+            ...     {'market_id': 2, 'embedding': [...], 'topics': [...]}
+            ... ]
+            >>> result = await db.batch_store_embeddings(embeddings_data)
+        """
+        import asyncio
+        
+        successful = 0
+        failed = 0
+        now = datetime.utcnow().isoformat()
+        
+        try:
+            # Process in batches to avoid overwhelming Supabase
+            for i in range(0, len(embeddings_data), batch_size):
+                batch = embeddings_data[i:i+batch_size]
+                
+                for attempt in range(max_retries):
+                    try:
+                        # Prepare batch data with timestamps
+                        batch_records = []
+                        for item in batch:
+                            record = {
+                                'market_id': item['market_id'],
+                                'embedding': item['embedding'],
+                                'created_at': now,
+                                'updated_at': now
+                            }
+                            if 'topics' in item and item['topics'] is not None:
+                                record['topics'] = item['topics']
+                            batch_records.append(record)
+                        
+                        # Batch upsert to Supabase
+                        response = self.client.table('vector_embeddings').upsert(
+                            batch_records,
+                            on_conflict='market_id'
+                        ).execute()
+                        
+                        successful += len(batch)
+                        logger.debug(f"Batch stored {len(batch)} embeddings successfully")
+                        break  # Success! Exit retry loop
+                        
+                    except Exception as e:
+                        error_msg = str(e)
+                        is_server_error = '521' in error_msg or '502' in error_msg or '503' in error_msg or '504' in error_msg
+                        
+                        if attempt < max_retries - 1 and is_server_error:
+                            wait_time = (attempt + 1) * 2
+                            logger.warning(f"⚠️  Supabase error storing batch (attempt {attempt + 1}/{max_retries}), retrying in {wait_time}s...")
+                            await asyncio.sleep(wait_time)
+                        elif attempt == max_retries - 1:
+                            # Last attempt failed, try individual inserts
+                            logger.warning(f"Batch storage failed after {max_retries} attempts for batch {i}-{i+batch_size}, trying individual inserts: {e}")
+                            
+                            # Fallback: try individual inserts
+                            for item in batch:
+                                try:
+                                    await self.store_embedding(
+                                        market_id=item['market_id'],
+                                        embedding=item['embedding'],
+                                        topics=item.get('topics')
+                                    )
+                                    successful += 1
+                                except Exception as e2:
+                                    failed += 1
+                                    logger.error(f"Failed to store embedding for market {item['market_id']}: {e2}")
+                            break  # Exit retry loop after individual inserts
+            
+            return {
+                "successful": successful,
+                "failed": failed,
+                "total": len(embeddings_data)
+            }
+            
+        except Exception as e:
+            logger.error(f"Batch embedding storage failed: {e}")
             raise
 
 

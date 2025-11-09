@@ -14,6 +14,9 @@ class Settings:
     
     # OpenAI Settings
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY")
+    
+    # Google AI Settings
+    GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY")
 
     # Supabase configuration
     SUPABASE_URL: str = os.getenv("SUPABASE_URL")
