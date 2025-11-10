@@ -120,8 +120,8 @@ export default function Home() {
 
       {/* Stale data indicator with refresh button */}
       {isStale && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-20">
-          <div className="flex items-center gap-2 px-4 py-2 bg-yellow-500/10 border border-yellow-500/50 rounded-lg">
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-30">
+          <div className="flex items-center gap-2 px-4 py-2 bg-yellow-500/10 border border-yellow-500/50 rounded-lg backdrop-blur-sm">
             <p className="text-sm text-yellow-500">Data is stale</p>
             <button
               onClick={refetch}

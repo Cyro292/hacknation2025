@@ -2,6 +2,9 @@
 
 > **Uncovering Hidden Correlations in Prediction Markets**  
 > A 24-hour hackathon project combining OpenAI embeddings, k-NN similarity, and Gemini reasoning to reveal arbitrage opportunities across financial prediction platforms.
+🌐 **Live Demo**: [https://bet-graph.vercel.app/](https://bet-graph.vercel.app/)
+
+Welcome to Hack-Nation, a full-stack platform for analyzing and visualizing data from Polymarket, a decentralized prediction market. This project combines a powerful Python backend for data processing with a dynamic Next.js frontend for interactive visualization, along with a set of autonomous agents for automated data collection and trading.
 
 ---
 
