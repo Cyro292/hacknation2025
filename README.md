@@ -574,30 +574,6 @@ Despite these limitations, the system has successfully identified non-obvious re
 
 This demonstrates the core value proposition: **uncovering logical dependencies that aren't immediately obvious to human traders.**
 
----
-
-## 🔬 Future Enhancements
-
-**High Priority:**
-- [ ] **Compositional Logic Engine:** Validate that sub-markets sum correctly to parent markets (e.g., individual candidates → party win)
-- [ ] **Mutual Exclusivity Validator:** Constraint-based checker for logically exclusive outcomes
-- [ ] **Transaction Cost Modeling:** Adjust expected values for fees, spreads, and slippage
-- [ ] **Extended Testing:** Stress-test with diverse market types and edge cases
-
-**Platform Expansion:**
-- [ ] **Live Market Updates:** WebSocket integration for real-time price changes
-- [ ] **Multi-Platform Support:** Extend to Manifold, Metaculus, PredictIt
-- [ ] **Historical Analysis:** Track arbitrage opportunities over time
-- [ ] **Strategy Backtesting:** Simulate past performance of AI recommendations
-
-**User Experience:**
-- [ ] **Alert System:** Notify users of high-value opportunities
-- [ ] **Mobile App:** React Native port for on-the-go analysis
-- [ ] **Advanced Clustering:** Hierarchical market taxonomy
-- [ ] **Social Features:** Share insights, follow traders, collaborative analysis
-
----
-
 ## 📚 References
 
 ### Academic Foundations
