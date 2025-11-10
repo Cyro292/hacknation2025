@@ -405,8 +405,8 @@ async def analyze_market_correlation(
     
     # Map convenience names to actual model names
     MODEL_MAPPING = {
-        "gemini-flash": "gemini-2.0-flash-exp",
-        "gemini-pro": "gemini-2.0-flash-thinking-exp"
+        "gemini-flash": "gemini-2.0-flash",
+        "gemini-pro": "gemini-2.0-flash-thinking"
     }
     
     actual_model = MODEL_MAPPING.get(model, model)

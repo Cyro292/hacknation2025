@@ -3,7 +3,7 @@
 
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { getAllEnrichedRelationsForMarkets } from "@/lib/api/endpoints/relations";
 import type { EnrichedRelationResponse } from "@/lib/api/types";
 import { RelatedMarketsDisplay } from "./RelatedMarketsDisplay";
@@ -200,6 +200,27 @@ function MarketDetailView({ marketId }: { marketId: number }) {
     };
   }, [marketId]);
 
+  // Get the top related market with expected values for display
+  const topMarketWithEV = useMemo(() => {
+    if (!relationsData?.related_markets || relationsData.related_markets.length === 0) {
+      return null;
+    }
+    
+    // Find the first market with expected values, sorted by investment score or correlation
+    const sorted = [...relationsData.related_markets].sort((a, b) => {
+      const scoreA = a.investment_score ?? a.ai_correlation_score ?? 0;
+      const scoreB = b.investment_score ?? b.ai_correlation_score ?? 0;
+      return scoreB - scoreA;
+    });
+    
+    return sorted.find(m => m.expected_values && m.expected_values.total_expected_profit !== undefined) || null;
+  }, [relationsData]);
+
+  // Remove ROI from best_strategy text
+  const cleanStrategy = topMarketWithEV?.best_strategy
+    ? topMarketWithEV.best_strategy.replace(/\s*\(ROI\s+[^)]+\)\.?\s*/gi, " ").trim()
+    : null;
+
   return (
     <div
       style={{
@@ -211,6 +232,83 @@ function MarketDetailView({ marketId }: { marketId: number }) {
         paddingRight: "4px",
       }}
     >
+      {/* Expected Value Section - Total Expected Profit Only */}
+      {topMarketWithEV && topMarketWithEV.expected_values?.total_expected_profit !== undefined && (
+        <div>
+          <FieldLabel>Expected Value</FieldLabel>
+          <div
+            style={{
+              padding: "16px",
+              backgroundColor: "rgba(30, 41, 59, 0.4)",
+              border: "1px solid rgba(148, 163, 184, 0.2)",
+              borderRadius: "12px",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "8px",
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    color: "#94a3b8",
+                    fontSize: "11px",
+                    fontWeight: "600",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                    marginBottom: "4px",
+                  }}
+                >
+                  Total Expected Profit
+                </div>
+                <div
+                  style={{
+                    color: "#f1f5f9",
+                    fontSize: "13px",
+                    fontWeight: "500",
+                  }}
+                >
+                  {topMarketWithEV.market.question}
+                </div>
+              </div>
+              <div
+                style={{
+                  color:
+                    topMarketWithEV.expected_values.total_expected_profit >= 0
+                      ? "#4ade80"
+                      : "#f87171",
+                  fontSize: "20px",
+                  fontWeight: "700",
+                  minWidth: "80px",
+                  textAlign: "right",
+                }}
+              >
+                {topMarketWithEV.expected_values.total_expected_profit >= 0 ? "+" : ""}
+                ${topMarketWithEV.expected_values.total_expected_profit.toFixed(2)}
+              </div>
+            </div>
+            {cleanStrategy && (
+              <div
+                style={{
+                  marginTop: "12px",
+                  paddingTop: "12px",
+                  borderTop: "1px solid rgba(148, 163, 184, 0.2)",
+                  color: "#94a3b8",
+                  fontSize: "12px",
+                  lineHeight: "1.4",
+                }}
+              >
+                {cleanStrategy}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Related Markets Section */}
       <div>
         <FieldLabel>Related Markets</FieldLabel>

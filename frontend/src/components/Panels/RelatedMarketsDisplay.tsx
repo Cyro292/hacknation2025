@@ -131,6 +131,11 @@ function RelatedMarketCard({
       : "medium"
     : null;
 
+  // Remove ROI from best_strategy text
+  const cleanStrategy = best_strategy
+    ? best_strategy.replace(/\s*\(ROI\s+[^)]+\)\.?\s*/gi, " ").trim()
+    : null;
+
   return (
     <div
       role="listitem"
@@ -211,47 +216,50 @@ function RelatedMarketCard({
         )}
       </div>
 
-      {/* AI Suggestion / Best Strategy */}
-      {best_strategy && (
-        <div
-          style={{
-            marginBottom: "12px",
-            padding: "10px 12px",
-            backgroundColor: "rgba(34, 197, 94, 0.1)",
-            border: "1px solid rgba(34, 197, 94, 0.3)",
-            borderRadius: "8px",
-          }}
-        >
+      {/* Expected Values - Only Total Expected Profit */}
+      {expected_values && expected_values.total_expected_profit !== undefined && (
+        <div style={{ marginBottom: "12px" }}>
           <div
             style={{
               display: "flex",
+              justifyContent: "space-between",
               alignItems: "center",
-              gap: "8px",
-              marginBottom: "4px",
+              padding: "10px 12px",
+              backgroundColor: "rgba(15, 23, 42, 0.3)",
+              border: "1px solid rgba(148, 163, 184, 0.2)",
+              borderRadius: "8px",
             }}
           >
-            <span style={{ fontSize: "16px" }}>💡</span>
-            <FieldLabel>AI Suggestion</FieldLabel>
+            <div>
+              <div
+                style={{
+                  color: "#94a3b8",
+                  fontSize: "11px",
+                  fontWeight: "600",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
+                  marginBottom: "4px",
+                }}
+              >
+                Total Expected Profit
+              </div>
+            </div>
+            <div
+              style={{
+                color:
+                  expected_values.total_expected_profit >= 0
+                    ? "#4ade80"
+                    : "#f87171",
+                fontSize: "16px",
+                fontWeight: "700",
+                minWidth: "70px",
+                textAlign: "right",
+              }}
+            >
+              {expected_values.total_expected_profit >= 0 ? "+" : ""}
+              ${expected_values.total_expected_profit.toFixed(2)}
+            </div>
           </div>
-          <TruncatedText
-            text={best_strategy}
-            maxLength={200}
-            style={{
-              color: "#4ade80",
-              fontSize: "14px",
-              fontWeight: "600",
-              marginTop: "4px",
-              wordBreak: "break-word",
-            }}
-          />
-        </div>
-      )}
-
-      {/* Expected Values */}
-      {expected_values && (
-        <div style={{ marginBottom: "12px" }}>
-          <FieldLabel>Expected Values</FieldLabel>
-          <ExpectedValuesDisplay expectedValues={expected_values} />
         </div>
       )}
 
@@ -334,6 +342,42 @@ function RelatedMarketCard({
           ID: {market.polymarket_id}
         </div>
       )}
+
+      {/* AI Suggestion / Best Strategy - At the bottom */}
+      {cleanStrategy && (
+        <div
+          style={{
+            marginTop: "12px",
+            padding: "10px 12px",
+            backgroundColor: "rgba(34, 197, 94, 0.1)",
+            border: "1px solid rgba(34, 197, 94, 0.3)",
+            borderRadius: "8px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              marginBottom: "4px",
+            }}
+          >
+            <span style={{ fontSize: "16px" }}>💡</span>
+            <FieldLabel>AI Suggestion</FieldLabel>
+          </div>
+          <TruncatedText
+            text={cleanStrategy}
+            maxLength={200}
+            style={{
+              color: "#4ade80",
+              fontSize: "14px",
+              fontWeight: "600",
+              marginTop: "4px",
+              wordBreak: "break-word",
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -405,6 +449,7 @@ function ExpectedValuesDisplay({
     .filter(([key]) => 
       key !== "best_scenario" && 
       key !== "worst_scenario" &&
+      key !== "expected_roi" && // Skip ROI calculation
       !key.startsWith("_") // Skip internal/metadata keys
     )
     .map(([key, value]) => {

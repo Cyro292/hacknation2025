@@ -3,6 +3,7 @@ Relation Routes - API endpoints for stored market relationships
 """
 from fastapi import APIRouter, HTTPException, Query
 from typing import List, Optional
+import logging
 from app.schemas.relation_schema import (
     RelatedMarket,
     RelationSearchResponse,
@@ -19,6 +20,7 @@ from app.schemas.relation_schema import (
 )
 from app.services.relation_service import get_relation_service
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/relations", tags=["Relations"])
 
 
@@ -61,21 +63,25 @@ async def get_graph_visualization(
         markets = data['markets']
         relations = data['relations']
         
-        # Create market ID to polymarket ID mapping
-        id_to_polymarket = {m.id: m.polymarket_id for m in markets}
+        # Filter out markets without polymarket_id and create mapping
+        valid_markets = [m for m in markets if m.polymarket_id]
+        id_to_polymarket = {m.id: m.polymarket_id for m in valid_markets}
         
         # Build nodes
         nodes = []
-        for market in markets:
+        for market in valid_markets:
             # Use first tag as group, or "ungrouped" if no tags
             group = market.tags[0] if market.tags else "ungrouped"
+            
+            # Use real_volatility_24h with fallback to proxy_volatility_24h
+            volatility = market.real_volatility_24h if market.real_volatility_24h is not None else market.proxy_volatility_24h
             
             nodes.append(GraphNode(
                 id=market.polymarket_id,
                 name=market.question,
-                shortened_name=market.shortened_name,
+                shortened_name=getattr(market, 'shortened_name', None),
                 group=group,
-                volatility=market.volatility_24h,
+                volatility=volatility,
                 volume=market.volume,
                 lastUpdate=market.updated_at,
                 market_id=market.id
@@ -102,7 +108,8 @@ async def get_graph_visualization(
         )
         
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Error in get_graph_visualization: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to generate graph data: {str(e)}")
 
 
 @router.get("/{market_id}/enriched", response_model=EnrichedRelationResponse)
